@@ -46,12 +46,12 @@ public class MyDebugScript : MonoBehaviour
         for (int i = 0; i < m_kAnchors.Count; i++)
         {
             string saved = JsonUtility.ToJson(m_kAnchors[i]);
-            PrintText(saved);
+            //PrintText(saved);
             
             //SavedAnchor readSave = JsonUtility.FromJson<SavedAnchor>(saved);
 
             StreamWriter writer = new StreamWriter(Application.persistentDataPath + "/test.json", true);
-            PrintText(Application.persistentDataPath);
+            //PrintText(Application.persistentDataPath);
             writer.WriteLine(saved);
             writer.Close();
         }
