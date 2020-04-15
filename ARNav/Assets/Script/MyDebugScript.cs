@@ -6,11 +6,11 @@ using GoogleARCore;
 using System;
 using System.IO;
 
-[Serializable]
+[System.Serializable]
 public class SavedAnchor
 {
     public Vector3 m_AnchorPosition;
-    
+
 }
 
 public class MyDebugScript : MonoBehaviour
@@ -19,13 +19,13 @@ public class MyDebugScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public static void PrintText(string strContent)
@@ -43,18 +43,15 @@ public class MyDebugScript : MonoBehaviour
 
     public static void SaveJSon()
     {
-        for (int i = 0; i < m_kAnchors.Count; i++)
-        {
-            string saved = JsonUtility.ToJson(m_kAnchors[i]);
-            PrintText(saved);
-            
-            //SavedAnchor readSave = JsonUtility.FromJson<SavedAnchor>(saved);
+        string saved = JsonUtility.ToJson(m_kAnchors);
+        PrintText(saved);
 
-            StreamWriter writer = new StreamWriter(Application.persistentDataPath + "/test.json", true);
-            PrintText(Application.persistentDataPath);
-            writer.WriteLine(saved);
-            writer.Close();
-        }
+        //SavedAnchor readSave = JsonUtility.FromJson<SavedAnchor>(saved);
+
+        StreamWriter writer = new StreamWriter(Application.persistentDataPath + "/test.json", true);        
+        writer.WriteLine(saved);
+        writer.Close();
+
     }
 
     public static void ReadJSon()
