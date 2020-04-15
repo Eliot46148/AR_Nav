@@ -6,26 +6,34 @@ using GoogleARCore;
 using System;
 using System.IO;
 
-[Serializable]
+[System.Serializable]
 public class SavedAnchor
 {
     public Vector3 m_AnchorPosition;
-    
+
+}
+
+[System.Serializable]
+public class SavedData{
+    public List<SavedAnchor> data;
 }
 
 public class MyDebugScript : MonoBehaviour
 {
     public static List<SavedAnchor> m_kAnchors = new List<SavedAnchor>();
+    public SavedData savedData = new SavedData();
+    public string dataPath;
     // Start is called before the first frame update
     void Start()
     {
-        
+        dataPath = Application.persistentDataPath + "/test.json";
+        savedData.data = m_kAnchors;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public static void PrintText(string strContent)
@@ -41,30 +49,13 @@ public class MyDebugScript : MonoBehaviour
         m_kAnchors.Add(kNewSavedAnchorPosition);
     }
 
-    public static void SaveJSon()
+    public void SaveJSon()
     {
-        for (int i = 0; i < m_kAnchors.Count; i++)
-        {
-            string saved = JsonUtility.ToJson(m_kAnchors[i]);
-            //PrintText(saved);
-            
-            //SavedAnchor readSave = JsonUtility.FromJson<SavedAnchor>(saved);
-
-            StreamWriter writer = new StreamWriter(Application.persistentDataPath + "/test.json", true);
-            //PrintText(Application.persistentDataPath);
-            writer.WriteLine(saved);
-            writer.Close();
-        }
+        File.WriteAllText(dataPath, JsonUtility.ToJson(savedData));
     }
 
-    public static void ReadJSon()
+    public void ReadJSon()
     {
-        StreamReader reader = new StreamReader(Application.persistentDataPath + "/test.json");
-        while (reader.Peek() >= 0)
-        {
-            SavedAnchor readSave = JsonUtility.FromJson<SavedAnchor>(reader.ReadLine());
-            PrintText(readSave.m_AnchorPosition.ToString());
-        }
-        reader.Close();
+        savedData = JsonUtility.FromJson<SavedData>(File.ReadAllText(dataPath));
     }
 }
