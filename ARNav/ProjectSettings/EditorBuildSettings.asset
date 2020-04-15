@@ -5,7 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
+    path: Assets/Scenes/ZXing_Test.unity
+    guid: 525473755b7afa94496a4eed0694ee86
+  - enabled: 1
     path: Assets/GoogleARCore/Examples/HelloAR/Scenes/HelloAR.unity
     guid: e6a6fa04348cb45c9b0221eb19c946da
   - enabled: 1
