@@ -6,8 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/ZXing_Test.unity
-    guid: 525473755b7afa94496a4eed0694ee86
+    path: Assets/GoogleARCore/Examples/HelloAR/Scenes/TEST.unity
+    guid: 7c1cc34287eb0d34abbd35ef2f6b73c0
   - enabled: 1
     path: Assets/GoogleARCore/Examples/HelloAR/Scenes/HelloAR.unity
     guid: e6a6fa04348cb45c9b0221eb19c946da

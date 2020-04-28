@@ -155,7 +155,7 @@ namespace GoogleARCore.Examples.HelloAR
 
                     MyDebugScript.PrintText(anchor.transform.position.ToString());
                     MyDebugScript.AddAnchor(anchor);
-                    MyDebugScript.SaveJSon();
+                    
                     //MyDebugScript.PrintText(MyDebugScript.m_kAnchors.Count.ToString());
                 }
             }
