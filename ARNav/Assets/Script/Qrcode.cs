@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
 using ZXing;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine;
 
@@ -10,7 +10,7 @@ public class Qrcode : MonoBehaviour
     private WebCamTexture myCam;//接收攝影機返回的圖片數據
     private BarcodeReader reader = new BarcodeReader();//ZXing的解碼
     private Result res;//儲存掃描後回傳的資訊
-    private Text text;
+    public Texture2D image;
     private bool flag = true;//判斷掃描是否執行完畢
 
     void Start()
@@ -24,7 +24,9 @@ public class Qrcode : MonoBehaviour
         {
             if (myCam.isPlaying == true)//若攝影機已開啟
             {
+
                 GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), myCam);//將攝影機讀取到的影像繪製到螢幕上
+                GUI.DrawTexture(new Rect(660, 240, 600, 600), image);
                 if (flag == true)//若掃描已執行完畢，則再繼續進行掃描，防止第一個掃描還沒結束就又再次掃描，造成嚴重的記憶體耗盡
                 {
                     StartCoroutine(scan());
@@ -51,7 +53,7 @@ public class Qrcode : MonoBehaviour
         Texture2D t2D = new Texture2D(Screen.width, Screen.height);//掃描後的影像儲存大小，越大會造成效能消耗越大，若影像嚴重延遲，請降低儲存大小。
         yield return new WaitForEndOfFrame();//等待攝影機的影像繪製完畢
 
-        t2D.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0, false);//掃描的範圍，設定為整個攝影機拍到的影像，若影像嚴重延遲，請降低掃描大小。
+        t2D.ReadPixels(new Rect(660, 240, 600, 600), 0, 0, false);//掃描的範圍，設定為整個攝影機拍到的影像，若影像嚴重延遲，請降低掃描大小。
         t2D.Apply();//開始掃描
 
         res = reader.Decode(t2D.GetPixels32(), t2D.width, t2D.height);//對剛剛掃描到的影像進行解碼，並將解碼後的資料回傳
@@ -59,12 +61,12 @@ public class Qrcode : MonoBehaviour
         //若是掃描不到訊息，則res為null
         if (res != null)
         {
-            
-            Debug.Log(res.Text);//將解碼後的資料列印出來
-            if(res.Text == "test")//解碼後的資料為指定的才會跳
+            if (res.Text == "test")
             {
                 SceneManager.LoadScene(1);
             }
+            Debug.Log(res.Text);//將解碼後的資料列印出來
+
         }
         flag = true;//掃描完畢
     }
