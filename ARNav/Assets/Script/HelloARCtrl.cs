@@ -153,8 +153,8 @@ namespace GoogleARCore.Examples.HelloAR
                     // Make game object a child of the anchor.
                     gameObject.transform.parent = anchor.transform;
 
-                    MyDebugScript.PrintText(anchor.transform.position.ToString());
-                    MyDebugScript.AddAnchor(anchor);
+                    //DataCtrl.PrintText(anchor.transform.position.ToString());
+                    //DataCtrl.AddAnchor(anchor);
                     //MyDebugScript.PrintText(MyDebugScript.m_kAnchors.Count.ToString());
                 }
             }
