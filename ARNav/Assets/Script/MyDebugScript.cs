@@ -10,7 +10,6 @@ using System.IO;
 public class SavedAnchor
 {
     public Vector3 m_AnchorPosition;
-
 }
 
 [System.Serializable]
@@ -75,22 +74,5 @@ public class MyDebugScript : MonoBehaviour
     }
 
 
-    //UI below
-    public GameObject m_inputNewPath;
-    public void ActiveInputNewPathField()
-    {
-        m_inputNewPath.SetActive(true);
-    }
-
-    public void AddNewPath()
-    {
-        Dropdown pathDropdown = GameObject.Find("PathDropdown").GetComponent<Dropdown>();
-        InputField inputNewField = m_inputNewPath.GetComponent<InputField>();
-        string newPathName = inputNewField.text;
-
-        pathDropdown.options.Add(new Dropdown.OptionData(newPathName));
-        //pathDropdown.AddOptions(pathDropdown.options);
-
-        m_inputNewPath.gameObject.SetActive(false);
-    }
+    
 }
