@@ -11,7 +11,6 @@ public class AnchorData
 {
     public Vector3 _postion;
 
-    public Vector3 Position => _postion;
     public AnchorData(float x, float y, float z)
     {
         _postion = new Vector3(x, y, z);
@@ -29,11 +28,12 @@ public class RouteData
     public List<AnchorData> _anchors;
     public int Length => _anchors.Count;
 
-    public List<AnchorData> Anchors => _anchors;
+    public string _routeName;
 
-    public RouteData()
+    public RouteData(string routename)
     {
         _anchors = new List<AnchorData>();
+        _routeName = routename;
     }
     public void AddAnchor(float x, float y, float z)
     {
@@ -53,61 +53,69 @@ public class MapData
 
     public int Length => _routes.Count;
 
-    public List<RouteData> Routes=>_routes;
+    public List<RouteData> Routes => _routes;
 
     public MapData()
     {
         _routes = new List<RouteData>();
     }
 
-    public void AddRoute()
+    public void AddRoute(string routename)
     {
-        _routes.Add(new RouteData());
+        _routes.Add(new RouteData(routename));
     }
 
-    public void AddAnchor(int routeIndex, float x, float y, float z)
+    public void AddAnchorToRoute(int routeIndex, float x, float y, float z)
     {
+        Debug.Log(routeIndex + " " + x + y + z);
         if (routeIndex < Length)
             _routes[routeIndex].AddAnchor(x, y, z);
         else
-            Debug.Log("MapData AddAnchor Error: routeIndex is out of the range of _routes");
+            Debug.LogError("MapData AddAnchor Error: routeIndex is out of the range of _routes");
     }
 
     public void AddAnchorToRoute(int routeIndex, Vector3 position)
     {
-        Debug.Log(routeIndex+" "+position.ToString());
+        Debug.Log(routeIndex + " " + position.ToString());
         if (routeIndex < Length)
             _routes[routeIndex].AddAnchor(position);
         else
-            Debug.Log("MapData AddAnchor Error: routeIndex is out of the range of _routes");
+            Debug.LogError("MapData AddAnchor Error: routeIndex is out of the range of _routes");
     }
 }
 
-public class DataCtrl : MonoBehaviour
+public class MapModel : MonoBehaviour
 {
     private const string _savedFileName = "/data.json";
     public MapData mapData = new MapData();
     private string _dataPath;
 
-    private int currentRouteIndex;
+    public int currentRouteIndex;
     void Start()
     {
         _dataPath = Application.persistentDataPath + _savedFileName;
         currentRouteIndex = 0;
+        if (mapData.Length <= 0)
+        {
+            AddRoute("Default Route");
+        }
         CreateTestData();
-        SaveJSon();
     }
 
     void CreateTestData()
     {
-        mapData.AddRoute();
-        mapData.AddAnchorToRoute(0, new Vector3(0, 0, 0));
-        mapData.AddAnchorToRoute(0, new Vector3(1, 1, 1));
-        mapData.AddAnchorToRoute(0, new Vector3(2, 2, 2));
-        mapData.AddRoute();
-        mapData.AddAnchorToRoute(1, new Vector3(5, 5, 5));
-        mapData.AddAnchorToRoute(1, new Vector3(1, 1, 1));
-        mapData.AddAnchorToRoute(1, new Vector3(2, 2, 2));
+        AddRoute("test1");
+        AddAnchorToCurrentRouter(0, 0, 0);
+        AddAnchorToCurrentRouter(1, 1, 1);        
+        AddAnchorToCurrentRouter(1, 2, 3);
+        AddRoute("test2");
+        AddAnchorToCurrentRouter(7,7,7);
+        AddAnchorToCurrentRouter(6,1,6);
+        AddAnchorToCurrentRouter(8,2,6);
+        Debug.Log(JsonUtility.ToJson(mapData));
+        SaveToJSon();
+        ReadFromJSon();
+        Debug.Log(JsonUtility.ToJson(mapData));
     }
 
     public void PrintText(string strContent)
@@ -116,22 +124,40 @@ public class DataCtrl : MonoBehaviour
         kDebugText.text = strContent;
     }
 
-    public void AddAnchor(Anchor newAnchor)
+    public void ChangeCurrentRoute(int routeIndex)
+    {
+        currentRouteIndex = routeIndex;
+    }
+
+    public void AddRoute(string newRouteName)
+    {
+        mapData.AddRoute(newRouteName);
+        currentRouteIndex = mapData.Length - 1;
+        Debug.Log("Current Route: " + currentRouteIndex);        
+    }
+
+    public void AddAnchorToCurrentRouter(Anchor newAnchor)
     {
         mapData.AddAnchorToRoute(currentRouteIndex, newAnchor.transform.position);
     }
 
-    public void SaveJSon()
+    public void AddAnchorToCurrentRouter(float x, float y, float z)
+    {
+        mapData.AddAnchorToRoute(currentRouteIndex, x, y, z);
+    }
+
+    public void AddAnchorToCurrentRouter(Vector3 position)
+    {
+        mapData.AddAnchorToRoute(currentRouteIndex, position);
+    }
+
+    public void SaveToJSon()
     {
         File.WriteAllText(_dataPath, JsonUtility.ToJson(mapData));
-        Debug.Log(JsonUtility.ToJson(mapData));
-        Debug.Log(mapData.Routes[0].Anchors[0].Position.ToString());
-        Debug.Log(mapData.Routes[0].Anchors[1].Position.ToString());
-        Debug.Log(mapData.Routes[0].Anchors[2].Position.ToString());
         Debug.Log("Data saved to " + _dataPath);
     }
 
-    public void ReadJSon()
+    public void ReadFromJSon()
     {
         mapData = JsonUtility.FromJson<MapData>(File.ReadAllText(_dataPath));
     }
