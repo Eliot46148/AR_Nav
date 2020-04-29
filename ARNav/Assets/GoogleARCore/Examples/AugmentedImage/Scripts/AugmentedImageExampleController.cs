@@ -95,8 +95,9 @@ namespace GoogleARCore.Examples.AugmentedImage
             // Get updated augmented images for this frame.
             Session.GetTrackables<AugmentedImage>(
                 m_TempAugmentedImages, TrackableQueryFilter.Updated);
+            debugText.text = m_TempAugmentedImages.Count.ToString() + " || " + m_TempAugmentedImages[0].getIndex();
 
-            debug(m_TempAugmentedImages.Count.ToString());
+
 
             // Create visualizers and anchors for updated augmented images that are tracking and do
             // not previously have a visualizer. Remove visualizers for stopped images.
@@ -131,6 +132,7 @@ namespace GoogleARCore.Examples.AugmentedImage
             }
 
             FitToScanOverlay.SetActive(true);
+            debug(debugText.text);
         }
     }
 }
