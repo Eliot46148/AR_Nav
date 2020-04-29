@@ -95,7 +95,6 @@ namespace GoogleARCore.Examples.AugmentedImage
             // Get updated augmented images for this frame.
             Session.GetTrackables<AugmentedImage>(
                 m_TempAugmentedImages, TrackableQueryFilter.Updated);
-            debugText.text = m_TempAugmentedImages.Count.ToString() + " || " + m_TempAugmentedImages[0].getIndex();
 
 
 
