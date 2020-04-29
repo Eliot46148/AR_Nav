@@ -40,6 +40,7 @@ namespace GoogleARCore.Examples.AugmentedImage
     /// </remarks>
     public class AugmentedImageExampleController : MonoBehaviour
     {
+        public Text debugText;
         /// <summary>
         /// A prefab for visualizing an AugmentedImage.
         /// </summary>
@@ -54,6 +55,11 @@ namespace GoogleARCore.Examples.AugmentedImage
             = new Dictionary<int, AugmentedImageVisualizer>();
 
         private List<AugmentedImage> m_TempAugmentedImages = new List<AugmentedImage>();
+
+        public void debug(string Text)
+        {
+            debugText.text = Text;
+        }
 
         /// <summary>
         /// The Unity Awake() method.
@@ -89,6 +95,9 @@ namespace GoogleARCore.Examples.AugmentedImage
             // Get updated augmented images for this frame.
             Session.GetTrackables<AugmentedImage>(
                 m_TempAugmentedImages, TrackableQueryFilter.Updated);
+            debugText.text = m_TempAugmentedImages.Count.ToString() + " || " + m_TempAugmentedImages[0].getIndex();
+
+
 
             // Create visualizers and anchors for updated augmented images that are tracking and do
             // not previously have a visualizer. Remove visualizers for stopped images.
@@ -123,6 +132,7 @@ namespace GoogleARCore.Examples.AugmentedImage
             }
 
             FitToScanOverlay.SetActive(true);
+            debug(debugText.text);
         }
     }
 }
