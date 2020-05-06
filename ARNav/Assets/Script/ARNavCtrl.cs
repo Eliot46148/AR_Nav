@@ -45,17 +45,30 @@ public class ARNavCtrl : MonoBehaviour
             pathDropdown.options.Add(new Dropdown.OptionData(name));
         }
         currentRouteIndex = data.Count - 1;
+        currentRouteIndex = pathDropdown.value;
     }
 
     public void OnAddNewPathBtnClick()
     {
         string newPathName = inputNewField.text;
         pathDropdown.options.Add(new Dropdown.OptionData(newPathName));
+        model.AddRoute(newPathName);
+        currentRouteIndex =pathDropdown.options.Count;
         m_inputNewPath.gameObject.SetActive(false);
+    }
+
+    public void OnDeletePathBtnClick(){
+        if(currentRouteIndex>0){
+            model.RemoveRouteByIndex(currentRouteIndex);
+            pathDropdown.options.RemoveAt(currentRouteIndex);
+            currentRouteIndex--;
+            pathDropdown.value = currentRouteIndex;
+        }
     }
 
     public void OnPathDropDownChange()
     {
         currentRouteIndex = pathDropdown.value;
+        Debug.Log(currentRouteIndex);
     }
 }

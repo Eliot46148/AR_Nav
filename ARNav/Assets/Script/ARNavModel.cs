@@ -120,7 +120,7 @@ public class ARNavModel
 {
     private const string _savedFileName = "/ARNavData.json";
     public MapData mapData = new MapData();
-    private string _dataPath; // C:/Users/xy152/AppData/LocalLow/NTUT/AR Nav/ARNavData.json
+    private string _dataPath; // C:/Users/${User Name}/AppData/LocalLow/NTUT/AR Nav/ARNavData.json
     public int currentRouteIndex;
     public ARNavModel()
     {
