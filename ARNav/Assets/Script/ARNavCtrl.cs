@@ -12,12 +12,12 @@ public class ARNavCtrl : MonoBehaviour
     private InputField inputNewField;
     public GameObject m_inputNewPath;
 
+    private int currentRouteIndex;
+
     void Start()
     {
-        
-            InitUI();
-            InitModel();
-        
+        InitUI();
+        InitModel();
     }
 
     void Update()
@@ -43,16 +43,19 @@ public class ARNavCtrl : MonoBehaviour
         foreach (string name in data)
         {
             pathDropdown.options.Add(new Dropdown.OptionData(name));
-            Debug.Log(name);
         }
+        currentRouteIndex = data.Count - 1;
     }
 
     public void OnAddNewPathBtnClick()
     {
         string newPathName = inputNewField.text;
-
         pathDropdown.options.Add(new Dropdown.OptionData(newPathName));
-
         m_inputNewPath.gameObject.SetActive(false);
+    }
+
+    public void OnPathDropDownChange()
+    {
+        currentRouteIndex = pathDropdown.value;
     }
 }

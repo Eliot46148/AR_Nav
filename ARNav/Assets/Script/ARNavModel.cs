@@ -45,8 +45,14 @@ public class RouteData
         _anchors.Add(new AnchorData(position));
     }
 
-    public List<AnchorData> GetAnchors(){
+    public List<AnchorData> GetAnchors()
+    {
         return _anchors;
+    }
+
+    public void RemoveAnchorByIndex(int index)
+    {
+        _anchors.RemoveAt(index);
     }
 }
 
@@ -95,8 +101,18 @@ public class MapData
         return names;
     }
 
-    public List<AnchorData> GetAnchorsByIndex(int index){
+    public List<AnchorData> GetAnchorsByIndex(int index)
+    {
         return _routes[index].GetAnchors();
+    }
+
+    public void RemoveRouteByIndex(int index)
+    {
+        _routes.RemoveAt(index);
+    }
+
+    public void RemoveAnchorByIndex(int route, int anchor){
+        _routes[route].RemoveAnchorByIndex(anchor);
     }
 }
 
@@ -179,7 +195,17 @@ public class ARNavModel
         return mapData.GetAllRoutesName();
     }
 
-    public List<AnchorData> GetAnchorsByRouteIndex(int index){
+    public List<AnchorData> GetAnchorsByRouteIndex(int index)
+    {
         return mapData.GetAnchorsByIndex(index);
+    }
+
+    public void RemoveRouteByIndex(int index)
+    {
+        mapData.RemoveRouteByIndex(index);
+    }
+
+    public void RemoveAnchorByIndex(int route, int anchor){
+        mapData.RemoveAnchorByIndex(route, anchor);
     }
 }
