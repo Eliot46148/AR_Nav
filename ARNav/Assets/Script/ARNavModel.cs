@@ -84,7 +84,7 @@ public class MapData
     }
 }
 
-public class MapModel : MonoBehaviour
+public class ARNavModel : MonoBehaviour
 {
     private const string _savedFileName = "/data.json";
     public MapData mapData = new MapData();

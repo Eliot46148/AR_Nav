@@ -4,12 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using GoogleARCore;
 
-public class MyUIScript : MonoBehaviour
+public class ARNavCtrl : MonoBehaviour
 {
+    
     // Start is called before the first frame update
     void Start()
     {
-        
+       
     }
 
     // Update is called once per frame

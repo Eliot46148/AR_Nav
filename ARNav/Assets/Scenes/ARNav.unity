@@ -330,8 +330,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: SaveJSon
+      - m_Target: {fileID: 960644224}
+        m_MethodName: SaveToJSon
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1280,7 +1280,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 960644226}
         m_MethodName: ActiveInputNewPathField
         m_Mode: 1
         m_Arguments:
@@ -1343,9 +1343,8 @@ GameObject:
   - component: {fileID: 960644225}
   - component: {fileID: 960644224}
   - component: {fileID: 960644226}
-  - component: {fileID: 960644227}
   m_Layer: 0
-  m_Name: Test
+  m_Name: Controller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1393,20 +1392,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_inputNewPath: {fileID: 1035652789}
---- !u!114 &960644227
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 960644223}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d10e9e45f1817f24abc00afc6d815bfd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mapData:
-    _routes: []
 --- !u!1 &984407772
 GameObject:
   m_ObjectHideFlags: 0
@@ -2451,7 +2436,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 960644226}
         m_MethodName: AddNewPath
         m_Mode: 1
         m_Arguments:
