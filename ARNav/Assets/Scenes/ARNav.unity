@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311918, g: 0.3807398, b: 0.35872716, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -986,11 +986,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FirstPersonCamera: {fileID: 896679035}
-  GameObjectVerticalPlanePrefab: {fileID: 1513252861858756, guid: 8b604092cbb3d482da82845b61a6809b,
+  GameObjectVerticalPlanePrefab: {fileID: 8327466318425758643, guid: 642d088bfa66cc34c891e029cebb3a44,
     type: 3}
-  GameObjectHorizontalPlanePrefab: {fileID: 1513252861858756, guid: 8b604092cbb3d482da82845b61a6809b,
+  GameObjectHorizontalPlanePrefab: {fileID: 8327466318425758643, guid: 642d088bfa66cc34c891e029cebb3a44,
     type: 3}
-  GameObjectPointPrefab: {fileID: 1513252861858756, guid: 8b604092cbb3d482da82845b61a6809b,
+  GameObjectPointPrefab: {fileID: 8327466318425758643, guid: 642d088bfa66cc34c891e029cebb3a44,
     type: 3}
 --- !u!1 &648217004
 GameObject:
@@ -1376,6 +1376,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_inputNewPath: {fileID: 1035652789}
+  m_arrowObject: {fileID: 100000, guid: ed2b8c06479227f40bdccff5343697fb, type: 3}
 --- !u!1 &984407772
 GameObject:
   m_ObjectHideFlags: 0
