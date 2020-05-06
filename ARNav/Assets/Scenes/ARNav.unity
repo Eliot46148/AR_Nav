@@ -330,7 +330,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 960644224}
+      - m_Target: {fileID: 0}
         m_MethodName: SaveToJSon
         m_Mode: 1
         m_Arguments:
@@ -1060,7 +1060,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Default Path
+  m_Text: 
 --- !u!222 &648217007
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1341,7 +1341,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 960644225}
-  - component: {fileID: 960644224}
   - component: {fileID: 960644226}
   m_Layer: 0
   m_Name: Controller
@@ -1350,21 +1349,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &960644224
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 960644223}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f336fb188848ab944ad671f49c7b3e62, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mapData:
-    _routes: []
-  currentRouteIndex: 0
 --- !u!4 &960644225
 Transform:
   m_ObjectHideFlags: 0
@@ -2021,12 +2005,21 @@ MonoBehaviour:
   m_ItemImage: {fileID: 0}
   m_Value: 0
   m_Options:
-    m_Options:
-    - m_Text: Default Path
-      m_Image: {fileID: 0}
+    m_Options: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 960644226}
+        m_MethodName: OnPathDropDownChange
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1317972951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2437,7 +2430,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 960644226}
-        m_MethodName: AddNewPath
+        m_MethodName: OnAddNewPathBtnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
