@@ -44,6 +44,10 @@ public class RouteData
     {
         _anchors.Add(new AnchorData(position));
     }
+
+    public List<AnchorData> GetAnchors(){
+        return _anchors;
+    }
 }
 
 [System.Serializable]
@@ -52,8 +56,6 @@ public class MapData
     public List<RouteData> _routes;
 
     public int Length => _routes.Count;
-
-    public List<RouteData> Routes => _routes;
 
     public MapData()
     {
@@ -67,7 +69,7 @@ public class MapData
 
     public void AddAnchorToRoute(int routeIndex, float x, float y, float z)
     {
-        Debug.Log(routeIndex + " " + x + y + z);
+        //Debug.Log(routeIndex + " " + x + y + z);
         if (routeIndex < Length)
             _routes[routeIndex].AddAnchor(x, y, z);
         else
@@ -82,16 +84,30 @@ public class MapData
         else
             Debug.LogError("MapData AddAnchor Error: routeIndex is out of the range of _routes");
     }
+
+    public List<string> GetAllRoutesName()
+    {
+        List<string> names = new List<string>();
+        foreach (RouteData route in _routes)
+        {
+            names.Add(route._routeName);
+        }
+        return names;
+    }
+
+    public List<AnchorData> GetAnchorsByIndex(int index){
+        return _routes[index].GetAnchors();
+    }
 }
 
-public class ARNavModel : MonoBehaviour
+public class ARNavModel
 {
-    private const string _savedFileName = "/data.json";
+    private const string _savedFileName = "/ARNavData.json";
     public MapData mapData = new MapData();
     private string _dataPath;
 
     public int currentRouteIndex;
-    void Start()
+    public ARNavModel()
     {
         _dataPath = Application.persistentDataPath + _savedFileName;
         currentRouteIndex = 0;
@@ -106,13 +122,13 @@ public class ARNavModel : MonoBehaviour
     {
         AddRoute("test1");
         AddAnchorToCurrentRouter(0, 0, 0);
-        AddAnchorToCurrentRouter(1, 1, 1);        
+        AddAnchorToCurrentRouter(1, 1, 1);
         AddAnchorToCurrentRouter(1, 2, 3);
         AddRoute("test2");
-        AddAnchorToCurrentRouter(7,7,7);
-        AddAnchorToCurrentRouter(6,1,6);
-        AddAnchorToCurrentRouter(8,2,6);
-        Debug.Log(JsonUtility.ToJson(mapData));
+        AddAnchorToCurrentRouter(7, 7, 7);
+        AddAnchorToCurrentRouter(6, 1, 6);
+        AddAnchorToCurrentRouter(8, 2, 6);
+        //Debug.Log(JsonUtility.ToJson(mapData));
         SaveToJSon();
         ReadFromJSon();
         Debug.Log(JsonUtility.ToJson(mapData));
@@ -133,7 +149,7 @@ public class ARNavModel : MonoBehaviour
     {
         mapData.AddRoute(newRouteName);
         currentRouteIndex = mapData.Length - 1;
-        Debug.Log("Current Route: " + currentRouteIndex);        
+        Debug.Log("Current Route: " + currentRouteIndex);
     }
 
     public void AddAnchorToCurrentRouter(Anchor newAnchor)
@@ -157,8 +173,13 @@ public class ARNavModel : MonoBehaviour
         Debug.Log("Data saved to " + _dataPath);
     }
 
-    public void ReadFromJSon()
+    public List<string> ReadFromJSon()
     {
         mapData = JsonUtility.FromJson<MapData>(File.ReadAllText(_dataPath));
+        return mapData.GetAllRoutesName();
+    }
+
+    public List<AnchorData> GetAnchorsByRouteIndex(int index){
+        return mapData.GetAnchorsByIndex(index);
     }
 }
