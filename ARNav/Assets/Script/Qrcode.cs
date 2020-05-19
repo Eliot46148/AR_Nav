@@ -42,7 +42,7 @@ public class Qrcode : MonoBehaviour
         if (Application.HasUserAuthorization(UserAuthorization.WebCam))
         {
             //設置攝影機要攝影的區域
-            myCam = new WebCamTexture(WebCamTexture.devices[0].name, Screen.width, Screen.height, 60);/* (攝影機名稱, 攝影機要拍到的寬度, 攝影機要拍到的高度, 攝影機的FPS) */
+            myCam = new WebCamTexture(WebCamTexture.devices[0].name, Screen.width, Screen.height, 120);/* (攝影機名稱, 攝影機要拍到的寬度, 攝影機要拍到的高度, 攝影機的FPS) */
             myCam.Play();//開啟攝影機
         }
     }
