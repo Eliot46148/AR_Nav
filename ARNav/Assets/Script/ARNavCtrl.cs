@@ -137,6 +137,7 @@
 
                     // Make game object a child of the anchor.
                     gameObject.transform.parent = anchor.transform;
+                    gameObject.transform.rotation *= Quaternion.Euler(0,180,0);
 
                     CreateArrow(anchor.transform);
                     model.AddAnchorToCurrentRouter(anchor);
@@ -202,7 +203,7 @@
             _text = GameObject.Find("DebugText").GetComponent<Text>();
             float minArrowDistance = 0.1f;//錨點間能放入箭頭的最小距離
 
-            List<AnchorData> anchors = model.GetAnchorsByRouteIndex(2);//錨點的list
+            List<AnchorData> anchors = model.GetAnchorsInCurrentRoute();//錨點的list
             if (anchors.Count == 0)//空routes的時候
             {
                 _text.text = "No anchor";
