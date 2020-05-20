@@ -120,7 +120,7 @@ public class ARNavModel
 {
     private const string _savedFileName = "/ARNavData.json";
     public MapData mapData = new MapData();
-    private string _dataPath; // C:/Users/${User Name}/AppData/LocalLow/NTUT/AR Nav/ARNavData.json
+    public string _dataPath; // C:/Users/${User Name}/AppData/LocalLow/NTUT/AR Nav/ARNavData.json
     public int currentRouteIndex;
     public ARNavModel()
     {
@@ -145,7 +145,7 @@ public class ARNavModel
         AddAnchorToCurrentRouter(8, 2, 6);
         //Debug.Log(JsonUtility.ToJson(mapData));
         SaveToJSon();
-        ReadFromJSon();
+        ReadFromJson();
         Debug.Log(JsonUtility.ToJson(mapData));
     }
 
@@ -182,13 +182,17 @@ public class ARNavModel
         mapData.AddAnchorToRoute(currentRouteIndex, position);
     }
 
-    public void SaveToJSon()
+
+    // 將資料寫至Json 
+    public void SaveToJSon() 
     {
         File.WriteAllText(_dataPath, JsonUtility.ToJson(mapData));
         Debug.Log("Data saved to " + _dataPath);
     }
 
-    public List<string> ReadFromJSon()
+
+    // 從Json讀取資料，回傳路徑名
+    public List<string> ReadFromJson()
     {
         mapData = JsonUtility.FromJson<MapData>(File.ReadAllText(_dataPath));
         return mapData.GetAllRoutesName();

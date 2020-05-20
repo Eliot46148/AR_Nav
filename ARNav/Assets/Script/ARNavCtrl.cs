@@ -22,6 +22,9 @@
 
         private int currentRouteIndex;
 
+        public Text DebugText;
+        public Text DebugText2;
+
         /// <summary>
         /// The first-person camera being used to render the passthrough camera image (i.e. AR
         /// background).
@@ -56,12 +59,12 @@
 
         public void Awake()
         {
-            Application.targetFrameRate = 60;
+            Application.targetFrameRate = 60;                            
         }
         void Start()
         {
             InitUI();
-            InitModel();
+            InitModel();           
         }
 
         void Update()
@@ -135,8 +138,8 @@
                     // Make game object a child of the anchor.
                     gameObject.transform.parent = anchor.transform;
                     GameObject.Find("Controller").GetComponent<ARNavCtrl>().CreateArrow(anchor.transform);
-
-
+                    model.AddAnchorToCurrentRouter(anchor);
+                    model.SaveToJSon();                   
                 }
             }
         }
@@ -155,13 +158,16 @@
         private void InitModel()
         {
             model = new ARNavModel();
-            List<string> data = model.ReadFromJSon();
+            
+            // 從Json讀取路徑資料
+            List<string> data = model.ReadFromJson();
+
+            // 初始化路徑選擇Dropdown
             foreach (string name in data)
             {
                 pathDropdown.options.Add(new Dropdown.OptionData(name));
             }
-            currentRouteIndex = data.Count - 1;
-            currentRouteIndex = pathDropdown.value;
+            currentRouteIndex = data.Count - 1;            
         }
 
         public void OnAddNewPathBtnClick()
