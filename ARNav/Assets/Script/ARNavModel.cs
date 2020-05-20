@@ -6,11 +6,20 @@ using GoogleARCore;
 using System;
 using System.IO;
 
+/// <summary>
+/// Anchor's model class
+/// </summary>
 [System.Serializable]
 public class AnchorData
 {
+    /// <summary>
+    /// Position of this anchor
+    /// </summary>
     public Vector3 _postion;
 
+    /// <summary>
+    /// Constructor of this anchor
+    /// </summary>
     public AnchorData(float x, float y, float z)
     {
         _postion = new Vector3(x, y, z);
@@ -22,19 +31,37 @@ public class AnchorData
     }
 }
 
+/// <summary>
+/// Route's model class
+/// </summary>
 [System.Serializable]
 public class RouteData
 {
     public List<AnchorData> _anchors;
+
+    /// <summary>
+    /// Amount of _anchors.
+    /// </summary>
     public int Length => _anchors.Count;
 
+    /// <summary>
+    /// Name of this route.
+    /// </summary>
     public string _routeName;
 
+    /// <summary>
+    /// Constructor of class RouteData
+    /// </summary>
+    /// <param name="routename">name of route</param>
     public RouteData(string routename)
     {
         _anchors = new List<AnchorData>();
         _routeName = routename;
     }
+
+    /// <summary>
+    /// Add anchor to _anchors
+    /// </summary>
     public void AddAnchor(float x, float y, float z)
     {
         _anchors.Add(new AnchorData(x, y, z));
@@ -45,34 +72,61 @@ public class RouteData
         _anchors.Add(new AnchorData(position));
     }
 
+    /// <summary>
+    /// Get this route's anchors data
+    /// </summary>
+    /// <returns>List of anchors</returns>
     public List<AnchorData> GetAnchors()
     {
         return _anchors;
     }
 
+    /// <summary>
+    /// Remove anchor from data by specified index
+    /// </summary>
+    /// <param name="index">Index of anchor in route</param>
     public void RemoveAnchorByIndex(int index)
     {
         _anchors.RemoveAt(index);
     }
 }
 
+/// <summary>
+/// Map's model class, contains of routes' data
+/// </summary>
 [System.Serializable]
 public class MapData
 {
+    /// <summary>
+    /// All routes' data
+    /// </summary>
     public List<RouteData> _routes;
 
+    /// <summary>
+    /// All routes' total amount
+    /// </summary>
     public int Length => _routes.Count;
 
+    /// <summary>
+    /// Constructor of MapData
+    /// </summary>
     public MapData()
     {
         _routes = new List<RouteData>();
     }
 
+    /// <summary>
+    /// Add new route to _routes
+    /// </summary>
+    /// <param name="routename">Name of routes</param>
     public void AddRoute(string routename)
     {
         _routes.Add(new RouteData(routename));
     }
 
+    /// <summary>
+    /// Add new anchor data to specified route
+    /// </summary>
     public void AddAnchorToRoute(int routeIndex, float x, float y, float z)
     {
         //Debug.Log(routeIndex + " " + x + y + z);
@@ -91,6 +145,10 @@ public class MapData
             Debug.LogError("MapData AddAnchor Error: routeIndex is out of the range of _routes");
     }
 
+    /// <summary>
+    /// Get all routes' data of name
+    /// </summary>
+    /// <returns>List of names of routes</returns>
     public List<string> GetAllRoutesName()
     {
         List<string> names = new List<string>();
@@ -101,27 +159,65 @@ public class MapData
         return names;
     }
 
+    /// <summary>
+    /// Get anchors in route by specified route index
+    /// </summary>
+    /// <param name="index">Index of route</param>
+    /// <returns>List of anchors</returns>
     public List<AnchorData> GetAnchorsByIndex(int index)
     {
         return _routes[index].GetAnchors();
     }
 
+    /// <summary>
+    /// Remove anchor in route by specified route index
+    /// </summary>
+    /// <param name="index">Index of route</param>
     public void RemoveRouteByIndex(int index)
     {
         _routes.RemoveAt(index);
     }
 
-    public void RemoveAnchorByIndex(int route, int anchor){
+    /// <summary>
+    /// Remove anchor in route by specified indexs of route an anchor
+    /// </summary>
+    /// <param name="route">Index of route</param>
+    /// <param name="anchor">Index of anchor</param>
+    public void RemoveAnchorByIndex(int route, int anchor)
+    {
         _routes[route].RemoveAnchorByIndex(anchor);
     }
 }
 
+/// <summary>
+/// AR_Nav's model, be responsible for providing interface of data control
+/// </summary>
 public class ARNavModel
 {
+    /// <summary>
+    /// Saved file name
+    /// </summary>
     private const string _savedFileName = "/ARNavData.json";
+
+    /// <summary>
+    /// Data of routes
+    /// </summary>    
     public MapData mapData = new MapData();
-    public string _dataPath; // C:/Users/${User Name}/AppData/LocalLow/NTUT/AR Nav/ARNavData.json
+
+    /// <summary>
+    /// Saved file path
+    /// </summary>
+    /// <remarks>
+    /// Windows: C:/Users/${User Name}/AppData/LocalLow/NTUT/AR Nav/ARNavData.json
+    /// Android: /DCIM/data/com.NTUT.ARNav/file
+    /// </remarks>
+    private string _dataPath; // C:/Users/${User Name}/AppData/LocalLow/NTUT/AR Nav/ARNavData.json
+
+    /// <summary>
+    /// Index of current route
+    /// </summary>
     public int currentRouteIndex;
+
     public ARNavModel()
     {
         _dataPath = Application.persistentDataPath + _savedFileName;
@@ -143,7 +239,6 @@ public class ARNavModel
         AddAnchorToCurrentRouter(7, 7, 7);
         AddAnchorToCurrentRouter(6, 1, 6);
         AddAnchorToCurrentRouter(8, 2, 6);
-        //Debug.Log(JsonUtility.ToJson(mapData));
         SaveToJSon();
         ReadFromJson();
         Debug.Log(JsonUtility.ToJson(mapData));
@@ -160,13 +255,20 @@ public class ARNavModel
         currentRouteIndex = routeIndex;
     }
 
+    /// <summary>
+    /// Push new route to data
+    /// </summary>
+    /// <param name="newRouteName">Name of new route.</param>
     public void AddRoute(string newRouteName)
     {
         mapData.AddRoute(newRouteName);
         currentRouteIndex = mapData.Length - 1;
-        Debug.Log("Current Route: " + currentRouteIndex);
+        //Debug.Log("Current Route: " + currentRouteIndex);
     }
 
+    /// <summary>
+    /// Add new anchor to current route
+    /// </summary>    
     public void AddAnchorToCurrentRouter(Anchor newAnchor)
     {
         mapData.AddAnchorToRoute(currentRouteIndex, newAnchor.transform.position);
@@ -183,32 +285,60 @@ public class ARNavModel
     }
 
 
-    // 將資料寫至Json 
-    public void SaveToJSon() 
+    /// <summary>
+    /// Write data to Json
+    /// </summary>
+    public void SaveToJSon()
     {
         File.WriteAllText(_dataPath, JsonUtility.ToJson(mapData));
         Debug.Log("Data saved to " + _dataPath);
     }
 
 
-    // 從Json讀取資料，回傳路徑名
+    /// <summary>
+    /// Read data from Json
+    /// </summary>
     public List<string> ReadFromJson()
     {
         mapData = JsonUtility.FromJson<MapData>(File.ReadAllText(_dataPath));
         return mapData.GetAllRoutesName();
     }
 
+    /// <summary>
+    /// Get Anchors in route by specified index
+    /// </summary>
+    /// <param name="index">Index of route</param>
+    /// <returns>List of anchors</returns>
     public List<AnchorData> GetAnchorsByRouteIndex(int index)
     {
         return mapData.GetAnchorsByIndex(index);
     }
 
+    /// <summary>
+    /// Get Anchors in route by currentRouteIndex
+    /// </summary>
+    /// <returns>List of anchors</returns>
+    public List<AnchorData> GetAnchorsInCurrentRoute()
+    {
+        return mapData.GetAnchorsByIndex(currentRouteIndex);
+    }
+
+    /// <summary>
+    /// Remove route by specified index
+    /// </summary>
+    /// <param name="index">Index of route</param>
     public void RemoveRouteByIndex(int index)
     {
         mapData.RemoveRouteByIndex(index);
     }
 
-    public void RemoveAnchorByIndex(int route, int anchor){
+    /// <summary>
+    /// Remove route by specified indexs of route and anchor.
+    /// </summary>
+    /// <param name="route">Index of route</param>
+    /// <param name="anchor">Index of anchor</param>
+    public void RemoveAnchorByIndex(int route, int anchor)
+    {
         mapData.RemoveAnchorByIndex(route, anchor);
     }
 }

@@ -59,12 +59,12 @@
 
         public void Awake()
         {
-            Application.targetFrameRate = 60;                            
+            Application.targetFrameRate = 60;
         }
         void Start()
         {
             InitUI();
-            InitModel();           
+            InitModel();
         }
 
         void Update()
@@ -139,7 +139,7 @@
                     gameObject.transform.parent = anchor.transform;
                     GameObject.Find("Controller").GetComponent<ARNavCtrl>().CreateArrow(anchor.transform);
                     model.AddAnchorToCurrentRouter(anchor);
-                    model.SaveToJSon();                   
+                    model.SaveToJSon();
                 }
             }
         }
@@ -158,7 +158,7 @@
         private void InitModel()
         {
             model = new ARNavModel();
-            
+
             // 從Json讀取路徑資料
             List<string> data = model.ReadFromJson();
 
@@ -167,7 +167,7 @@
             {
                 pathDropdown.options.Add(new Dropdown.OptionData(name));
             }
-            currentRouteIndex = data.Count - 1;            
+            currentRouteIndex = data.Count - 1;
         }
 
         public void OnAddNewPathBtnClick()
