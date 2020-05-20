@@ -137,7 +137,8 @@
 
                     // Make game object a child of the anchor.
                     gameObject.transform.parent = anchor.transform;
-                    GameObject.Find("Controller").GetComponent<ARNavCtrl>().CreateArrow(anchor.transform);
+
+                    CreateArrow(anchor.transform);
                     model.AddAnchorToCurrentRouter(anchor);
                     model.SaveToJSon();
                 }
@@ -199,17 +200,18 @@
         public void CreateArrow(Transform newAnchorTransform)
         {
             _text = GameObject.Find("DebugText").GetComponent<Text>();
-            float minArrowDistance = 0.5f;//錨點間能放入箭頭的最小距離
+            float minArrowDistance = 0.1f;//錨點間能放入箭頭的最小距離
 
-            List<AnchorData> anchors = model.mapData._routes[0].GetAnchors();//錨點的list
+            List<AnchorData> anchors = model.GetAnchorsByRouteIndex(2);//錨點的list
             if (anchors.Count == 0)//空routes的時候
             {
-                model.mapData._routes[0].AddAnchor(newAnchorTransform.position);//增加mapDate的值
+                _text.text = "No anchor";
+                return;
             }
             else
             {
+                _text.text = "Have anchors";
                 AnchorData lastAnchor = anchors[anchors.Count - 1];//最後一個錨點
-                model.mapData._routes[0].AddAnchor(newAnchorTransform.position);//增加mapDate的值
 
                 Vector3 distance = newAnchorTransform.position - lastAnchor._postion;//最後一個錨點與新錨點的距離
 
@@ -222,9 +224,10 @@
                         GameObject arrow = GameObject.Instantiate(m_arrowObject, Vector3.zero, Quaternion.identity);
 
                         GameObject temp = new GameObject();
-                        temp.transform.position = new Vector3(lastAnchor._postion.x + distance.x * i, lastAnchor._postion.y + distance.y * i, lastAnchor._postion.z + distance.z * i);
+                        temp.transform.position = new Vector3(lastAnchor._postion.x + distance.x / stage * i, lastAnchor._postion.y + distance.y / stage * i, lastAnchor._postion.z + distance.z / stage * i);
                         temp.transform.LookAt(newAnchorTransform);
-                        arrow.transform.parent = temp.transform;
+                        arrow.transform.position = temp.transform.position;
+                        arrow.transform.rotation = temp.transform.rotation * Quaternion.Euler(90, 90, 0);
                         GameObject.Destroy(temp);
                     }
                 }
