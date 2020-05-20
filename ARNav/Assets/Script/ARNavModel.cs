@@ -250,6 +250,10 @@ public class ARNavModel
         kDebugText.text = strContent;
     }
 
+    /// <summary>
+    /// Change currentRouteIndex
+    /// </summary>
+    /// <param name="routeIndex">Index of new currentRou</param>
     public void ChangeCurrentRoute(int routeIndex)
     {
         currentRouteIndex = routeIndex;

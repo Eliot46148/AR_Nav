@@ -63,8 +63,11 @@
         }
         void Start()
         {
-            InitUI();
-            InitModel();
+            pathDropdown = GameObject.Find("PathDropdown").GetComponent<Dropdown>();
+            inputNewField = m_inputNewPath.GetComponent<InputField>();
+            InitModel();            
+            DisplayCurrentRoute();
+            DebugText.text = "test";
         }
 
         void Update()
@@ -150,12 +153,6 @@
             m_inputNewPath.SetActive(true);
         }
 
-        private void InitUI()
-        {
-            pathDropdown = GameObject.Find("PathDropdown").GetComponent<Dropdown>();
-            inputNewField = m_inputNewPath.GetComponent<InputField>();
-        }
-
         private void InitModel()
         {
             model = new ARNavModel();
@@ -195,6 +192,7 @@
         {
             currentRouteIndex = pathDropdown.value;
             Debug.Log(currentRouteIndex);
+            DisplayCurrentRoute();
         }
 
         public void CreateArrow(Transform newAnchorTransform)
@@ -232,6 +230,14 @@
                     }
                 }
             }
+        }
+        void DisplayCurrentRoute(){
+            List<AnchorData> anchors = model.GetAnchorsInCurrentRoute();
+            foreach(AnchorData anchor in anchors){
+                var newAnchor = Instantiate(GameObjectPointPrefab, anchor._postion, Quaternion.identity);
+                CreateArrow(newAnchor.transform);
+            }
+            DebugText.text = "Read"+model.currentRouteIndex;
         }
 
         /// <summary>
