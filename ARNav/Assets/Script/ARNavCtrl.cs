@@ -141,6 +141,7 @@
 
                     CreateArrow(anchor.transform);
                     model.AddAnchorToCurrentRouter(anchor);
+                    gameObject.GetComponentInChildren<TextMesh>().text = model.GetAnchorsInCurrentRoute().Count.ToString();//顯示編號
                     model.SaveToJSon();
                 }
             }
