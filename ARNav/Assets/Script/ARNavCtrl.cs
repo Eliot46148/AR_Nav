@@ -4,6 +4,7 @@
     using UnityEngine;
     using UnityEngine.UI;
     using System;
+    using System.Linq;
 
 #if UNITY_EDITOR
     // Set up touch input propagation while using Instant Preview in the editor.
@@ -13,7 +14,6 @@
     public class ARNavCtrl : MonoBehaviour
     {
         private ARNavModel model;
-
         private Dropdown pathDropdown;
         private Text _text;
         private InputField inputNewField;
@@ -142,7 +142,7 @@
                     gameObject.transform.parent = anchor.transform;
                     gameObject.transform.rotation *= Quaternion.Euler(0,180,0);
 
-                    CreateArrow(anchor.transform);
+                    CreateArrow(anchor.transform.position, model.GetAnchorsInCurrentRoute().Last()._postion);
                     model.AddAnchorToCurrentRouter(anchor);
                     gameObject.GetComponentInChildren<TextMesh>().text = model.GetAnchorsInCurrentRoute().Count.ToString();//顯示編號
                     model.SaveToJSon();
@@ -193,11 +193,17 @@
         public void OnPathDropDownChange()
         {
             currentRouteIndex = pathDropdown.value;
-            Debug.Log(currentRouteIndex);
+            Debug.Log("Now on route: "+currentRouteIndex);
             DisplayCurrentRoute();
         }
 
-        public void CreateArrow(Transform newAnchorTransform)
+
+        /// <summary>
+        /// Connect anchor newAnchor and lastAnchor with arrow
+        /// </summary>
+        /// <param name="newAnchorPostion">Transform of new anchor</param>
+        /// <param name="lastAnchorPosition">Index of last anchor (to be connected></param>
+        public void CreateArrow(Vector3 lastAnchorPosition ,Vector3 newAnchorPostion )
         {
             _text = GameObject.Find("DebugText").GetComponent<Text>();
             float minArrowDistance = 0.1f;//錨點間能放入箭頭的最小距離
@@ -210,10 +216,9 @@
             }
             else
             {
-                _text.text = "Have anchors";
-                AnchorData lastAnchor = anchors[anchors.Count - 1];//最後一個錨點
+                _text.text = "Have anchors";                
 
-                Vector3 distance = newAnchorTransform.position - lastAnchor._postion;//最後一個錨點與新錨點的距離
+                Vector3 distance = newAnchorPostion - lastAnchorPosition;//最後一個錨點與新錨點的距離
 
                 if (distance.magnitude > minArrowDistance)//若距離大於最小值
                 {
@@ -224,8 +229,8 @@
                         GameObject arrow = GameObject.Instantiate(m_arrowObject, Vector3.zero, Quaternion.identity);
 
                         GameObject temp = new GameObject();
-                        temp.transform.position = new Vector3(lastAnchor._postion.x + distance.x / stage * i, lastAnchor._postion.y + distance.y / stage * i, lastAnchor._postion.z + distance.z / stage * i);
-                        temp.transform.LookAt(newAnchorTransform);
+                        temp.transform.position = new Vector3(lastAnchorPosition.x + distance.x / stage * i, lastAnchorPosition.y + distance.y / stage * i, lastAnchorPosition.z + distance.z / stage * i);
+                        temp.transform.LookAt(newAnchorPostion);
                         arrow.transform.position = temp.transform.position;
                         arrow.transform.rotation = temp.transform.rotation * Quaternion.Euler(90, 90, 0);
                         GameObject.Destroy(temp);
@@ -233,13 +238,18 @@
                 }
             }
         }
+
+        void RemoveCurrentRoute(){
+            
+        }
+
         void DisplayCurrentRoute(){
-            List<AnchorData> anchors = model.GetAnchorsInCurrentRoute();
-            foreach(AnchorData anchor in anchors){
-                var newAnchor = Instantiate(GameObjectPointPrefab, anchor._postion, Quaternion.identity);
-                CreateArrow(newAnchor.transform);
-            }
-            DebugText.text = "Read"+model.currentRouteIndex;
+            // List<AnchorData> anchors = model.GetAnchorsInCurrentRoute();
+            // foreach(AnchorData anchor in anchors){
+            //     var newAnchor = Instantiate(GameObjectPointPrefab, anchor._postion, Quaternion.identity);
+            //     CreateArrow(newAnchor.transform,0);
+            // }
+            // DebugText.text = "Read"+model.currentRouteIndex;
         }
 
         /// <summary>
