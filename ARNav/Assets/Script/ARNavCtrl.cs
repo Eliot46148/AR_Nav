@@ -142,7 +142,7 @@
                     gameObject.transform.parent = anchor.transform;
                     gameObject.transform.rotation *= Quaternion.Euler(0,180,0);
 
-                    CreateArrow(anchor.transform.position, model.GetAnchorsInCurrentRoute().Last()._postion);
+                    CreateArrow(model.GetAnchorsInCurrentRoute().Last()._postion, anchor.transform.position);
                     model.AddAnchorToCurrentRouter(anchor);
                     gameObject.GetComponentInChildren<TextMesh>().text = model.GetAnchorsInCurrentRoute().Count.ToString();//顯示編號
                     model.SaveToJSon();
