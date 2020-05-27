@@ -67,7 +67,7 @@
             inputNewField = m_inputNewPath.GetComponent<InputField>();
             InitModel();            
             DisplayCurrentRoute();
-            DebugText.text = "test";
+            DebugText.text = "test";            
         }
 
         void Update()
@@ -239,8 +239,15 @@
             }
         }
 
-        void RemoveCurrentRoute(){
-            
+        /// <summary>
+        /// Destroy all children of entered parent object.
+        /// </summary>
+        /// <param name="parent">Transform of parent object.</param>
+        void RemoveAllChildren(Transform parent){            
+            foreach(Transform child in parent){
+                Debug.Log("Destroying "+child.name);
+                Destroy(child.gameObject);
+            }
         }
 
         void DisplayCurrentRoute(){
