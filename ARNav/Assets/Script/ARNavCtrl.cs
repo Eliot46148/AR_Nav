@@ -128,23 +128,25 @@
                     }
 
                     // Instantiate prefab at the hit pose.
-                    var gameObject = Instantiate(prefab, hit.Pose.position, hit.Pose.rotation);
+                    var AnchorGameObject = Instantiate(prefab, hit.Pose.position, hit.Pose.rotation);
+                    AnchorGameObject.transform.parent = GameObject.Find("Root").transform.Find("Anchor");
 
                     // Compensate for the hitPose rotation facing away from the raycast (i.e.
                     // camera).
-                    gameObject.transform.Rotate(0, k_PrefabRotation, 0, Space.Self);
+                    AnchorGameObject.transform.Rotate(0, k_PrefabRotation, 0, Space.Self);
 
                     // Create an anchor to allow ARCore to track the hitpoint as understanding of
                     // the physical world evolves.
                     var anchor = hit.Trackable.CreateAnchor(hit.Pose);
 
                     // Make game object a child of the anchor.
-                    gameObject.transform.parent = anchor.transform;
-                    gameObject.transform.rotation *= Quaternion.Euler(0,180,0);
+                    AnchorGameObject.transform.parent = anchor.transform;
+                    AnchorGameObject.transform.rotation *= Quaternion.Euler(0,180,0);
 
                     CreateArrow(model.GetAnchorsInCurrentRoute().Last()._postion, anchor.transform.position);
                     model.AddAnchorToCurrentRouter(anchor);
-                    gameObject.GetComponentInChildren<TextMesh>().text = model.GetAnchorsInCurrentRoute().Count.ToString();//顯示編號
+                    
+                    AnchorGameObject.GetComponentInChildren<TextMesh>().text = model.GetAnchorsInCurrentRoute().Count.ToString();//顯示編號
                     model.SaveToJSon();
                 }
             }
@@ -205,11 +207,16 @@
         /// <param name="lastAnchorPosition">Index of last anchor (to be connected></param>
         public void CreateArrow(Vector3 lastAnchorPosition ,Vector3 newAnchorPostion )
         {
-            _text = GameObject.Find("DebugText").GetComponent<Text>();
             float minArrowDistance = 0.1f;//錨點間能放入箭頭的最小距離
+            if((newAnchorPostion - lastAnchorPosition).magnitude <= minArrowDistance)//距離太短
+            {
+                return;
+            }
+
+            _text = GameObject.Find("DebugText").GetComponent<Text>();
 
             List<AnchorData> anchors = model.GetAnchorsInCurrentRoute();//錨點的list
-            if (anchors.Count == 0)//空routes的時候
+            if (anchors.Count == 0)//routes還沒有錨點
             {
                 _text.text = "No anchor";
                 return;
@@ -220,21 +227,19 @@
 
                 Vector3 distance = newAnchorPostion - lastAnchorPosition;//最後一個錨點與新錨點的距離
 
-                if (distance.magnitude > minArrowDistance)//若距離大於最小值
+                int stage = Convert.ToInt32(distance.magnitude / minArrowDistance);
+                for (int i = 0; i < stage; i++)//根據距離放置箭頭
                 {
-                    int stage = Convert.ToInt32(distance.magnitude / minArrowDistance);
-                    for (int i = 0; i < stage; i++)//根據距離放置箭頭
-                    {
-                        //放置箭頭，每次的位置是「最後一個錨點的位置朝向新錨點」的方向+最小距離。箭頭的角度旋轉到這個方向
-                        GameObject arrow = GameObject.Instantiate(m_arrowObject, Vector3.zero, Quaternion.identity);
+                    //放置箭頭，每次的位置是「最後一個錨點的位置朝向新錨點」的方向+最小距離。箭頭的角度旋轉到這個方向
+                    GameObject arrow = Instantiate(m_arrowObject, Vector3.zero, Quaternion.identity);
+                    arrow.transform.parent = GameObject.Find("Root").transform.Find("Arrow");
 
-                        GameObject temp = new GameObject();
-                        temp.transform.position = new Vector3(lastAnchorPosition.x + distance.x / stage * i, lastAnchorPosition.y + distance.y / stage * i, lastAnchorPosition.z + distance.z / stage * i);
-                        temp.transform.LookAt(newAnchorPostion);
-                        arrow.transform.position = temp.transform.position;
-                        arrow.transform.rotation = temp.transform.rotation * Quaternion.Euler(90, 90, 0);
-                        GameObject.Destroy(temp);
-                    }
+                    GameObject temp = new GameObject();
+                    temp.transform.position = new Vector3(lastAnchorPosition.x + distance.x / stage * i, lastAnchorPosition.y + distance.y / stage * i, lastAnchorPosition.z + distance.z / stage * i);
+                    temp.transform.LookAt(newAnchorPostion);
+                    arrow.transform.position = temp.transform.position;
+                    arrow.transform.rotation = temp.transform.rotation * Quaternion.Euler(90, 90, 0);
+                    GameObject.Destroy(temp);
                 }
             }
         }
@@ -244,12 +249,26 @@
         }
 
         void DisplayCurrentRoute(){
-            // List<AnchorData> anchors = model.GetAnchorsInCurrentRoute();
-            // foreach(AnchorData anchor in anchors){
-            //     var newAnchor = Instantiate(GameObjectPointPrefab, anchor._postion, Quaternion.identity);
-            //     CreateArrow(newAnchor.transform,0);
-            // }
-            // DebugText.text = "Read"+model.currentRouteIndex;
+             List<AnchorData> anchors = model.GetAnchorsInCurrentRoute();
+
+            foreach (AnchorData anchor in anchors){
+                var newAnchor = Instantiate(GameObjectPointPrefab, anchor._postion, Quaternion.identity);
+                newAnchor.transform.parent = GameObject.Find("Root").transform.Find("Anchor");
+
+                newAnchor.GetComponentInChildren<TextMesh>().text = (anchors.IndexOf(anchor) + 1).ToString();//顯示編號
+
+                Vector3 lastAnchorPosition;
+                if(anchors.IndexOf(anchor) == 0)
+                {
+                    lastAnchorPosition = newAnchor.transform.position;
+                }
+                else
+                {
+                    lastAnchorPosition = anchors[anchors.IndexOf(anchor) - 1]._postion;
+                }
+                CreateArrow(lastAnchorPosition, newAnchor.transform.position);
+            }
+             DebugText.text = "Read"+model.currentRouteIndex;
         }
 
         /// <summary>
