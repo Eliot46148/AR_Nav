@@ -152,7 +152,7 @@ namespace GoogleARCore.Examples.HelloAR
 
                     // Make game object a child of the anchor.
                     gameObject.transform.parent = anchor.transform;
-                    GameObject.Find("Controller").GetComponent<ARNavCtrl>().CreateArrow(anchor.transform);
+                    // GameObject.Find("Controller").GetComponent<ARNavCtrl>().CreateArrow(anchor.transform);
                     
                    
                 }
