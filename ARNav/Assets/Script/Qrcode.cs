@@ -51,14 +51,15 @@ public class Qrcode : MonoBehaviour
     {
         flag = false;//掃描開始執行
 
-        Texture2D t2D = new Texture2D(Screen.width, Screen.height);//掃描後的影像儲存大小，越大會造成效能消耗越大，若影像嚴重延遲，請降低儲存大小。
+        Texture2D t2D = new Texture2D(Screen.width - 600, Screen.height - 600);//掃描後的影像儲存大小，越大會造成效能消耗越大，若影像嚴重延遲，請降低儲存大小。
         yield return new WaitForEndOfFrame();//等待攝影機的影像繪製完畢
 
-        t2D.ReadPixels(new Rect((Screen.width - 600) / 2, (Screen.height - 600) / 2, 600, 600), 0, 0, false);//掃描的範圍，設定為整個攝影機拍到的影像，若影像嚴重延遲，請降低掃描大小。
+        t2D.ReadPixels(new Rect(t2D.width / 2, t2D.height / 2, 600, 600), 0, 0, false);//掃描的範圍，設定為整個攝影機拍到的影像，若影像嚴重延遲，請降低掃描大小。
         t2D.Apply();//開始掃描
 
         res = reader.Decode(t2D.GetPixels32(), t2D.width, t2D.height);//對剛剛掃描到的影像進行解碼，並將解碼後的資料回傳
-
+        Destroy(t2D);
+        
         //若是掃描不到訊息，則res為null
         if (res != null)
         {
@@ -69,7 +70,10 @@ public class Qrcode : MonoBehaviour
             Debug.Log(res.Text);//將解碼後的資料列印出來
 
         }
+ 
         flag = true;//掃描完畢
+       
+        
     }
 
     void OnDisable()
