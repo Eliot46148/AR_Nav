@@ -65,7 +65,7 @@
         {
             pathDropdown = GameObject.Find("PathDropdown").GetComponent<Dropdown>();
             inputNewField = m_inputNewPath.GetComponent<InputField>();
-            InitModel();            
+            InitModel();
             DisplayCurrentRoute();
             DebugText.text = "test";            
         }
@@ -143,8 +143,14 @@
                     AnchorGameObject.transform.parent = anchor.transform;
                     AnchorGameObject.transform.rotation *= Quaternion.Euler(0,180,0);
 
-                    CreateArrow(model.GetAnchorsInCurrentRoute().Last()._postion, anchor.transform.position);
+                    Vector3 temp;
+                    if(model.GetAnchorsInCurrentRoute().Count==0)
+                        temp = anchor.transform.position;
+                    else
+                        temp = model.GetAnchorsInCurrentRoute().Last()._postion;
                     model.AddAnchorToCurrentRouter(anchor);
+                    CreateArrow(temp, anchor.transform.position);
+                    
                     
                     AnchorGameObject.GetComponentInChildren<TextMesh>().text = model.GetAnchorsInCurrentRoute().Count.ToString();//顯示編號
                     model.SaveToJSon();
@@ -163,10 +169,12 @@
 
             // 從Json讀取路徑資料
             List<string> data = model.ReadFromJson();
+            Debug.Log("5151231321321");
 
             // 初始化路徑選擇Dropdown
             foreach (string name in data)
             {
+                Debug.Log(name);
                 pathDropdown.options.Add(new Dropdown.OptionData(name));
             }
             currentRouteIndex = data.Count - 1;
@@ -196,6 +204,8 @@
         {
             currentRouteIndex = pathDropdown.value;
             Debug.Log("Now on route: "+currentRouteIndex);
+            DestroyAllChildren(GameObject.Find("Root").transform.Find("Anchor"));
+            DestroyAllChildren(GameObject.Find("Root").transform.Find("Arrow"));
             DisplayCurrentRoute();
         }
 
@@ -248,7 +258,7 @@
         /// Destroy all children of entered parent object.
         /// </summary>
         /// <param name="parent">Transform of parent object.</param>
-        void RemoveAllChildren(Transform parent){            
+        void DestroyAllChildren(Transform parent){            
             foreach(Transform child in parent){
                 Debug.Log("Destroying "+child.name);
                 Destroy(child.gameObject);
@@ -257,6 +267,8 @@
 
         void DisplayCurrentRoute(){
              List<AnchorData> anchors = model.GetAnchorsInCurrentRoute();
+
+            if(anchors.Count <=0) return;
 
             foreach (AnchorData anchor in anchors){
                 var newAnchor = Instantiate(GameObjectPointPrefab, anchor._postion, Quaternion.identity);

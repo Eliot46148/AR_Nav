@@ -224,9 +224,10 @@ public class ARNavModel
         currentRouteIndex = 0;
         if (mapData.Length <= 0)
         {
+            Debug.Log(mapData.Length);
             AddRoute("Default Route");
         }
-        CreateTestData();
+
     }
 
     void CreateTestData()
@@ -265,8 +266,10 @@ public class ARNavModel
     /// <param name="newRouteName">Name of new route.</param>
     public void AddRoute(string newRouteName)
     {
+        Debug.Log(newRouteName);
         mapData.AddRoute(newRouteName);
         currentRouteIndex = mapData.Length - 1;
+        Debug.Log("currentRouteIndex: " + currentRouteIndex);
         //Debug.Log("Current Route: " + currentRouteIndex);
     }
 
@@ -295,7 +298,7 @@ public class ARNavModel
     public void SaveToJSon()
     {
         File.WriteAllText(_dataPath, JsonUtility.ToJson(mapData));
-        Debug.Log("Data saved to " + _dataPath);
+        // Debug.Log("Data saved to " + _dataPath);
     }
 
 
@@ -304,7 +307,12 @@ public class ARNavModel
     /// </summary>
     public List<string> ReadFromJson()
     {
-        mapData = JsonUtility.FromJson<MapData>(File.ReadAllText(_dataPath));
+        if (File.Exists(_dataPath))
+            mapData = JsonUtility.FromJson<MapData>(File.ReadAllText(_dataPath));
+        else
+        {
+            File.WriteAllText(_dataPath, JsonUtility.ToJson(mapData));
+        }
         return mapData.GetAllRoutesName();
     }
 
