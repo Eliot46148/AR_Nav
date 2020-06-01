@@ -139,6 +139,8 @@
                     // the physical world evolves.
                     var anchor = hit.Trackable.CreateAnchor(hit.Pose);
 
+                    anchor.transform.parent = GameObject.Find("Root").transform.Find("Anchor");
+
                     // Make game object a child of the anchor.
                     AnchorGameObject.transform.parent = anchor.transform;
                     AnchorGameObject.transform.rotation *= Quaternion.Euler(0,180,0);
@@ -152,8 +154,7 @@
                     CreateArrow(temp, anchor.transform.position);
                     
                     
-                    AnchorGameObject.GetComponentInChildren<TextMesh>().text = model.GetAnchorsInCurrentRoute().Count.ToString();//顯示編號
-                    model.SaveToJSon();
+                    AnchorGameObject.GetComponentInChildren<TextMesh>().text = model.GetAnchorsInCurrentRoute().Count.ToString();//顯示編號                    
                 }
             }
         }
@@ -200,12 +201,16 @@
             }
         }
 
+        /// <summary>
+        /// Triggered when changing the UI PathDropDown status
+        /// </summary>
         public void OnPathDropDownChange()
         {
             currentRouteIndex = pathDropdown.value;
             Debug.Log("Now on route: "+currentRouteIndex);
             DestroyAllChildren(GameObject.Find("Root").transform.Find("Anchor"));
-            DestroyAllChildren(GameObject.Find("Root").transform.Find("Arrow"));
+            DestroyAllChildren(GameObject.Find("Root").transform.Find("Arrow"));   
+             
             DisplayCurrentRoute();
         }
 
@@ -261,6 +266,7 @@
         void DestroyAllChildren(Transform parent){            
             foreach(Transform child in parent){
                 Debug.Log("Destroying "+child.name);
+                child.gameObject.SetActive(false);
                 Destroy(child.gameObject);
             }
         }
@@ -361,6 +367,15 @@
                             "makeText", unityActivity, message, 0);
                     toastObject.Call("show");
                 }));
+            }
+        }
+
+        public void Test(){            
+            Debug.Log("Anchors:"+GameObject.Find("Root").transform.Find("Anchor").childCount);
+            foreach(Transform child in GameObject.Find("Root").transform.Find("Anchor")){
+                Debug.Log("Destroying "+child.name);
+                child.gameObject.SetActive(false);
+                Destroy(child.gameObject);
             }
         }
     }
