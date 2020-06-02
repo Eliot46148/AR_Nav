@@ -224,7 +224,6 @@ public class ARNavModel
         currentRouteIndex = 0;
         if (mapData.Length <= 0)
         {
-            Debug.Log(mapData.Length);
             AddRoute("Default Route");
         }
 
@@ -298,7 +297,7 @@ public class ARNavModel
     public void SaveToJSon()
     {
         File.WriteAllText(_dataPath, JsonUtility.ToJson(mapData));
-        // Debug.Log("Data saved to " + _dataPath);
+        Debug.Log("Data saved to " + _dataPath);
     }
 
 

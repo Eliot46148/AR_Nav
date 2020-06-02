@@ -20,8 +20,6 @@
         public GameObject m_inputNewPath;
         public GameObject m_arrowObject;
 
-        private int currentRouteIndex;
-
         public Text DebugText;
         public Text DebugText2;
 
@@ -67,7 +65,7 @@
             inputNewField = m_inputNewPath.GetComponent<InputField>();
             InitModel();
             DisplayCurrentRoute();
-            DebugText.text = "test";            
+            DebugText.text = "test";
         }
 
         void Update()
@@ -143,17 +141,17 @@
 
                     // Make game object a child of the anchor.
                     AnchorGameObject.transform.parent = anchor.transform;
-                    AnchorGameObject.transform.rotation *= Quaternion.Euler(0,180,0);
+                    AnchorGameObject.transform.rotation *= Quaternion.Euler(0, 180, 0);
 
                     Vector3 temp;
-                    if(model.GetAnchorsInCurrentRoute().Count==0)
+                    if (model.GetAnchorsInCurrentRoute().Count == 0)
                         temp = anchor.transform.position;
                     else
                         temp = model.GetAnchorsInCurrentRoute().Last()._postion;
                     model.AddAnchorToCurrentRouter(anchor);
                     CreateArrow(temp, anchor.transform.position);
-                    
-                    
+
+
                     AnchorGameObject.GetComponentInChildren<TextMesh>().text = model.GetAnchorsInCurrentRoute().Count.ToString();//顯示編號                    
                 }
             }
@@ -170,15 +168,15 @@
 
             // 從Json讀取路徑資料
             List<string> data = model.ReadFromJson();
-            Debug.Log("5151231321321");
+            Debug.Log("Amount of routes: " + data.Count);
 
             // 初始化路徑選擇Dropdown
             foreach (string name in data)
             {
-                Debug.Log(name);
                 pathDropdown.options.Add(new Dropdown.OptionData(name));
             }
-            currentRouteIndex = data.Count - 1;
+            model.currentRouteIndex = data.Count - 1;
+            pathDropdown.value = model.currentRouteIndex;
         }
 
         public void OnAddNewPathBtnClick()
@@ -186,18 +184,18 @@
             string newPathName = inputNewField.text;
             pathDropdown.options.Add(new Dropdown.OptionData(newPathName));
             model.AddRoute(newPathName);
-            currentRouteIndex = pathDropdown.options.Count;
+            model.currentRouteIndex = pathDropdown.options.Count;
             m_inputNewPath.gameObject.SetActive(false);
         }
 
         public void OnDeletePathBtnClick()
         {
-            if (currentRouteIndex > 0)
+            if (model.currentRouteIndex > 0)
             {
-                model.RemoveRouteByIndex(currentRouteIndex);
-                pathDropdown.options.RemoveAt(currentRouteIndex);
-                currentRouteIndex--;
-                pathDropdown.value = currentRouteIndex;
+                model.RemoveRouteByIndex(model.currentRouteIndex);
+                pathDropdown.options.RemoveAt(model.currentRouteIndex);
+                model.currentRouteIndex--;
+                pathDropdown.value = model.currentRouteIndex;
             }
         }
 
@@ -206,12 +204,16 @@
         /// </summary>
         public void OnPathDropDownChange()
         {
-            currentRouteIndex = pathDropdown.value;
-            Debug.Log("Now on route: "+currentRouteIndex);
+            model.currentRouteIndex = pathDropdown.value;
+            Debug.Log("Now on route: " + model.currentRouteIndex);
             DestroyAllChildren(GameObject.Find("Root").transform.Find("Anchor"));
-            DestroyAllChildren(GameObject.Find("Root").transform.Find("Arrow"));   
-             
+            DestroyAllChildren(GameObject.Find("Root").transform.Find("Arrow"));
             DisplayCurrentRoute();
+        }
+
+        public void OnSaveBtnClicked()
+        {
+            model.SaveToJSon();
         }
 
 
@@ -220,10 +222,10 @@
         /// </summary>
         /// <param name="newAnchorPostion">Transform of new anchor</param>
         /// <param name="lastAnchorPosition">Index of last anchor (to be connected></param>
-        public void CreateArrow(Vector3 lastAnchorPosition ,Vector3 newAnchorPostion )
+        public void CreateArrow(Vector3 lastAnchorPosition, Vector3 newAnchorPostion)
         {
             float minArrowDistance = 0.1f;//錨點間能放入箭頭的最小距離
-            if((newAnchorPostion - lastAnchorPosition).magnitude <= minArrowDistance)//距離太短
+            if ((newAnchorPostion - lastAnchorPosition).magnitude <= minArrowDistance)//距離太短
             {
                 return;
             }
@@ -238,7 +240,7 @@
             }
             else
             {
-                _text.text = "Have anchors";                
+                _text.text = "Have anchors";
 
                 Vector3 distance = newAnchorPostion - lastAnchorPosition;//最後一個錨點與新錨點的距離
 
@@ -263,27 +265,34 @@
         /// Destroy all children of entered parent object.
         /// </summary>
         /// <param name="parent">Transform of parent object.</param>
-        void DestroyAllChildren(Transform parent){            
-            foreach(Transform child in parent){
-                Debug.Log("Destroying "+child.name);
+        void DestroyAllChildren(Transform parent)
+        {
+            foreach (Transform child in parent)
+            {
+                // Debug.Log("Destroying " + child.name);
                 child.gameObject.SetActive(false);
                 Destroy(child.gameObject);
             }
         }
 
-        void DisplayCurrentRoute(){
-             List<AnchorData> anchors = model.GetAnchorsInCurrentRoute();
+        /// <summary>
+        /// Place the current route's anchors.
+        /// </summary>
+        void DisplayCurrentRoute()
+        {
+            List<AnchorData> anchors = model.GetAnchorsInCurrentRoute();
 
-            if(anchors.Count <=0) return;
+            if (anchors.Count <= 0) return;
 
-            foreach (AnchorData anchor in anchors){
+            foreach (AnchorData anchor in anchors)
+            {
                 var newAnchor = Instantiate(GameObjectPointPrefab, anchor._postion, Quaternion.identity);
                 newAnchor.transform.parent = GameObject.Find("Root").transform.Find("Anchor");
 
                 newAnchor.GetComponentInChildren<TextMesh>().text = (anchors.IndexOf(anchor) + 1).ToString();//顯示編號
 
                 Vector3 lastAnchorPosition;
-                if(anchors.IndexOf(anchor) == 0)
+                if (anchors.IndexOf(anchor) == 0)
                 {
                     lastAnchorPosition = newAnchor.transform.position;
                 }
@@ -293,7 +302,6 @@
                 }
                 CreateArrow(lastAnchorPosition, newAnchor.transform.position);
             }
-             DebugText.text = "Read"+model.currentRouteIndex;
         }
 
         /// <summary>
@@ -370,10 +378,12 @@
             }
         }
 
-        public void Test(){            
-            Debug.Log("Anchors:"+GameObject.Find("Root").transform.Find("Anchor").childCount);
-            foreach(Transform child in GameObject.Find("Root").transform.Find("Anchor")){
-                Debug.Log("Destroying "+child.name);
+        public void Test()
+        {
+            Debug.Log("Anchors:" + GameObject.Find("Root").transform.Find("Anchor").childCount);
+            foreach (Transform child in GameObject.Find("Root").transform.Find("Anchor"))
+            {
+                Debug.Log("Destroying " + child.name);
                 child.gameObject.SetActive(false);
                 Destroy(child.gameObject);
             }
