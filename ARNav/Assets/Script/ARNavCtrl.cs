@@ -1,8 +1,10 @@
-﻿namespace GoogleARCore.Examples.HelloAR
+﻿namespace GoogleARCore
 {
     using System.Collections.Generic;
     using UnityEngine;
     using UnityEngine.UI;
+    using UnityEngine.Events;
+    using UnityEditor;
     using System;
     using System.Linq;
 
@@ -19,6 +21,14 @@
         private InputField inputNewField;
         public GameObject m_inputNewPath;
         public GameObject m_arrowObject;
+
+        public GameObject DialogPanel;
+
+        public GameObject AlertPanel;
+
+        public DialogBox dialog;
+
+        public AlertBox alert;
 
         public Text DebugText;
         public Text DebugText2;
@@ -66,6 +76,8 @@
             InitModel();
             DisplayCurrentRoute();
             DebugText.text = "test";
+            dialog = new DialogBox(DialogPanel);
+            alert = new AlertBox(AlertPanel);
         }
 
         void Update()
@@ -151,7 +163,6 @@
                     model.AddAnchorToCurrentRouter(anchor);
                     CreateArrow(temp, anchor.transform.position);
 
-
                     AnchorGameObject.GetComponentInChildren<TextMesh>().text = model.GetAnchorsInCurrentRoute().Count.ToString();//顯示編號                    
                 }
             }
@@ -190,14 +201,32 @@
 
         public void OnDeletePathBtnClick()
         {
-            if (model.currentRouteIndex > 0)
+            dialog.SetInfo("", "刪除後將無法復原\n確認刪除？");
+            dialog.show(new UnityAction(OnDialogConfirmBtnClicked), new UnityAction(OnDialogCancelBtnClicked));
+        }
+
+        public void OnDialogConfirmBtnClicked()
+        {
+            if (model.mapData.Length > 1)
             {
                 model.RemoveRouteByIndex(model.currentRouteIndex);
                 pathDropdown.options.RemoveAt(model.currentRouteIndex);
-                model.currentRouteIndex--;
+                model.currentRouteIndex = 0;
                 pathDropdown.value = model.currentRouteIndex;
+                DisplayCurrentRoute();
+            }
+            else
+            {
+                alert.SetInfo("", "需要有兩條以上路徑才能進行刪除");
+                alert.show();
             }
         }
+
+        public void OnDialogCancelBtnClicked()
+        {
+            return;
+        }
+
 
         /// <summary>
         /// Triggered when changing the UI PathDropDown status

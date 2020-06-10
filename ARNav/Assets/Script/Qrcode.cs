@@ -25,7 +25,6 @@ public class Qrcode : MonoBehaviour
         {
             if (myCam.isPlaying == true)//若攝影機已開啟
             {
-
                 GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), myCam);//將攝影機讀取到的影像繪製到螢幕上
                 GUI.DrawTexture(new Rect((Screen.width - 600) / 2, (Screen.height - 600) / 2, 600, 600), image);
                 if (flag == true)//若掃描已執行完畢，則再繼續進行掃描，防止第一個掃描還沒結束就又再次掃描，造成嚴重的記憶體耗盡
@@ -59,7 +58,7 @@ public class Qrcode : MonoBehaviour
 
         res = reader.Decode(t2D.GetPixels32(), t2D.width, t2D.height);//對剛剛掃描到的影像進行解碼，並將解碼後的資料回傳
         Destroy(t2D);
-        
+
         //若是掃描不到訊息，則res為null
         if (res != null)
         {
@@ -70,10 +69,10 @@ public class Qrcode : MonoBehaviour
             Debug.Log(res.Text);//將解碼後的資料列印出來
 
         }
- 
+
         flag = true;//掃描完畢
-       
-        
+
+
     }
 
     void OnDisable()
