@@ -1536,6 +1536,7 @@ MonoBehaviour:
   m_arrowObject: {fileID: 100000, guid: ed2b8c06479227f40bdccff5343697fb, type: 3}
   DialogPanel: {fileID: 1965033469}
   AlertPanel: {fileID: 1399567406}
+  ModeText: {fileID: 686842549}
   DebugText: {fileID: 1401989810}
   DebugText2: {fileID: 1010116405}
   FirstPersonCamera: {fileID: 896679035}
@@ -1669,7 +1670,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &686842550
 RectTransform:
   m_ObjectHideFlags: 0

@@ -80,14 +80,22 @@
             DebugText.text = "test";
             dialog = new DialogBox(DialogPanel);
             alert = new AlertBox(AlertPanel);
-            context = new Context();
+            context = new Context(new UnityAction(UserWork), new UnityAction(ManagerWork));
         }
 
         void Update()
         {
-            DisplayDistance();
             _UpdateApplicationLifecycle();
+            DisplayDistance();
+            context.Run();
+        }
 
+        /// <summary>
+        /// Update handler in Manager mode.
+        /// </summary>
+        void ManagerWork()
+        {
+            // Debug.Log("Manager");
             // If the player has not touched the screen, we are done with this update.
             Touch touch;
             if (Input.touchCount < 1 || (touch = Input.GetTouch(0)).phase != TouchPhase.Began)
@@ -119,6 +127,7 @@
                 else
                 {
                     // Choose the prefab based on the Trackable that got hit.
+                    Debug.Log("hitted");
                     GameObject prefab;
                     if (hit.Trackable is FeaturePoint)
                     {
@@ -170,6 +179,15 @@
                     AnchorGameObject.GetComponentInChildren<TextMesh>().text = model.GetAnchorsInCurrentRoute().Count.ToString();//顯示編號                    
                 }
             }
+        }
+
+        /// <summary>
+        /// Update handler in User mode.
+        /// </summary>
+        void UserWork()
+        {
+            // Debug.Log("User");
+            return;
         }
 
         public void ActiveInputNewPathField()

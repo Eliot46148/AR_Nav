@@ -1,23 +1,32 @@
 using UnityEngine;
+using UnityEngine.Events;
 public abstract class Mode
 {
+    public UnityAction _work;
     public abstract void Work();
+    public Mode(UnityAction work)
+    {
+        _work = work;
+    }
 }
 
 public class UserMode : Mode
 {
+    public UserMode(UnityAction work) : base(work) { }
+
     public override void Work()
     {
-        Debug.Log("User");
+        _work.Invoke();
         return;
     }
 }
 
 public class ManagerMode : Mode
 {
+    public ManagerMode(UnityAction work) : base(work) { }
     public override void Work()
     {
-        Debug.Log("Manager");
+        _work.Invoke();
         return;
     }
 }
@@ -25,10 +34,14 @@ public class ManagerMode : Mode
 public class Context
 {
     private Mode _mode;
+    UnityAction _managerWork;
+    UnityAction _userWork;
 
-    public Context()
+    public Context(UnityAction userWork, UnityAction managerWork)
     {
-        _mode = new UserMode();
+        _userWork = userWork;
+        _managerWork = managerWork;
+        _mode = new UserMode(_userWork);
     }
 
     /// <summary>
@@ -36,7 +49,7 @@ public class Context
     /// </summary>
     public void SetUserMode()
     {
-        _mode = new UserMode();
+        _mode = new UserMode(_userWork);
     }
 
     /// <summary>
@@ -44,7 +57,7 @@ public class Context
     /// </summary>
     public void SetManagerMode()
     {
-        _mode = new ManagerMode();
+        _mode = new ManagerMode(_managerWork);
     }
 
     /// <summary>
