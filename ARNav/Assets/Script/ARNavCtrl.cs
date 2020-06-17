@@ -193,7 +193,7 @@
             pathDropdown.options.Add(new Dropdown.OptionData(newPathName));
             model.AddRoute(newPathName);
             model.currentRouteIndex = pathDropdown.options.Count;
-            m_inputNewPath.gameObject.SetActive(false);
+            m_inputframe.gameObject.SetActive(false);
             pathDropdown.value = model.currentRouteIndex;
         }
 
@@ -225,6 +225,21 @@
             return;
         }
 
+        public void OnRemoveAnchorBtnClicked()
+        {
+            if (model.GetCurrentRouteLength() > 0)
+            {
+                model.RemoveLastAnchor();
+                RefreshView();
+            }
+            else
+            {
+                alert.SetInfo("", "路徑點數量為零");
+                alert.show();
+            }
+            Debug.Log("Length of Current Route:" + model.GetCurrentRouteLength());
+        }
+
 
         /// <summary>
         /// Triggered when changing the UI PathDropDown status
@@ -233,9 +248,7 @@
         {
             model.currentRouteIndex = pathDropdown.value;
             Debug.Log("Now on route: " + model.currentRouteIndex);
-            DestroyAllChildren(GameObject.Find("Root").transform.Find("Anchor"));
-            DestroyAllChildren(GameObject.Find("Root").transform.Find("Arrow"));
-            DisplayCurrentRoute();
+            RefreshView();
         }
 
         public void OnSaveBtnClicked()
@@ -301,6 +314,25 @@
                 Destroy(child.gameObject);
             }
         }
+
+        /// <summary>
+        /// Remove all anchors on the AR plane.
+        /// </summary>
+        void DestroyAllAnchors()
+        {
+            DestroyAllChildren(GameObject.Find("Root").transform.Find("Anchor"));
+            DestroyAllChildren(GameObject.Find("Root").transform.Find("Arrow"));
+        }
+
+        /// <summary>
+        /// Re_render the anchors on the AR plane.
+        /// </summary>
+        void RefreshView()
+        {
+            DestroyAllAnchors();
+            DisplayCurrentRoute();
+        }
+
 
         /// <summary>
         /// Place the current route's anchors.

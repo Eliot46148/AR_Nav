@@ -226,7 +226,7 @@ public class ARNavModel
         {
             AddRoute("Default Route");
         }
-        // CreateTestData();
+        CreateTestData();
     }
 
     void CreateTestData()
@@ -335,6 +335,15 @@ public class ARNavModel
     }
 
     /// <summary>
+    /// Get the length of current route
+    /// </summary>
+    /// <returns>Number of current route's anchors</returns>
+    public int GetCurrentRouteLength()
+    {
+        return mapData._routes[currentRouteIndex].Length;
+    }
+
+    /// <summary>
     /// Remove route by specified index
     /// </summary>
     /// <param name="index">Index of route</param>
@@ -351,5 +360,13 @@ public class ARNavModel
     public void RemoveAnchorByIndex(int route, int anchor)
     {
         mapData.RemoveAnchorByIndex(route, anchor);
+    }
+
+    /// <summary>
+    /// Remove the last anchor in current route.
+    /// </summary>
+    public void RemoveLastAnchor()
+    {
+        mapData.RemoveAnchorByIndex(currentRouteIndex, GetCurrentRouteLength() - 1);
     }
 }
