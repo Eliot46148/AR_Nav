@@ -18,6 +18,7 @@
     {
         private ARNavModel model;
         private Dropdown pathDropdown;
+        private Context context;
         private Text _text;
         private InputField inputNewField;
         public GameObject m_inputframe;
@@ -27,8 +28,12 @@
         public GameObject AlertPanel;
         public DialogBox dialog;
         public AlertBox alert;
+        public GameObject ModeText;
         public Text DebugText;
         public Text DebugText2;
+
+        int testi = 0;
+
 
         /// <summary>
         /// The first-person camera being used to render the passthrough camera image (i.e. AR
@@ -75,6 +80,7 @@
             DebugText.text = "test";
             dialog = new DialogBox(DialogPanel);
             alert = new AlertBox(AlertPanel);
+            context = new Context();
         }
 
         void Update()
@@ -212,6 +218,7 @@
                 pathDropdown.options.RemoveAt(model.currentRouteIndex);
                 model.currentRouteIndex = 0;
                 pathDropdown.value = model.currentRouteIndex;
+                pathDropdown.RefreshShownValue();
                 DisplayCurrentRoute();
             }
             else
@@ -255,6 +262,8 @@
         public void OnSaveBtnClicked()
         {
             model.SaveToJSon();
+            alert.SetInfo("", "儲存成功");
+            alert.show();
         }
 
 
@@ -515,13 +524,18 @@
 
         public void Test()
         {
-            Debug.Log("Anchors:" + GameObject.Find("Root").transform.Find("Anchor").childCount);
-            foreach (Transform child in GameObject.Find("Root").transform.Find("Anchor"))
+            if (testi % 2 != 0)
             {
-                Debug.Log("Destroying " + child.name);
-                child.gameObject.SetActive(false);
-                Destroy(child.gameObject);
+                context.SetUserMode();
+                ModeText.SetActive(false);
             }
+            else
+            {
+                context.SetManagerMode();
+                ModeText.SetActive(true);
+            }
+            context.Run();
+            testi++;
         }
     }
 }

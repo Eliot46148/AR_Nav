@@ -226,7 +226,7 @@ public class ARNavModel
         {
             AddRoute("Default Route");
         }
-        CreateTestData();
+        // CreateTestData();
     }
 
     void CreateTestData()
