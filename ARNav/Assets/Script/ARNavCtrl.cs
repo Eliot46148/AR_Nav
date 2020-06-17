@@ -4,6 +4,7 @@
     using UnityEngine;
     using UnityEngine.UI;
     using UnityEngine.Events;
+    using UnityEngine.EventSystems;
     using UnityEditor;
     using System;
     using System.Linq;
@@ -94,10 +95,10 @@
             }
 
             // Should not handle input if the player is pointing on UI.
-            /*if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
+            if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
             {
                 return;
-            }*/
+            }
 
             // Raycast against the location the player touched to search for planes.
             TrackableHit hit;
@@ -339,7 +340,7 @@
         {
             //管理者顯示目前路徑總長幾公尺
             //使用者顯示距離目的地還有幾公尺
-            Text debugText = GameObject.Find("DebugText").GetComponent<Text>();
+            Text distanceText = GameObject.Find("Distance").GetComponent<Text>();
 
             List<AnchorData> anchors = model.GetAnchorsInCurrentRoute();
             float distance = 0;
@@ -378,11 +379,11 @@
 
                 if (distance <= 2)
                 {
-                    debugText.text = "距離目的地: < 2公尺";
+                    distanceText.text = "距離目的地: < 2公尺";
                 }
                 else
                 {
-                    debugText.text = "距離目的地:" + distance.ToString("F1") + "公尺";
+                    distanceText.text = "距離目的地:" + distance.ToString("F1") + "公尺";
                 }
             }
         }
