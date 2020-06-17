@@ -19,6 +19,7 @@
         private Dropdown pathDropdown;
         private Text _text;
         private InputField inputNewField;
+        public GameObject m_inputframe;
         public GameObject m_inputNewPath;
         public GameObject m_arrowObject;
         public GameObject DialogPanel;
@@ -166,7 +167,7 @@
 
         public void ActiveInputNewPathField()
         {
-            m_inputNewPath.SetActive(true);
+            m_inputframe.SetActive(true);
         }
 
         private void InitModel()
