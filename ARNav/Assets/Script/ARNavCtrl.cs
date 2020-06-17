@@ -19,6 +19,7 @@
         private Dropdown pathDropdown;
         private Text _text;
         private InputField inputNewField;
+        public GameObject m_inputframe;
         public GameObject m_inputNewPath;
         public GameObject m_arrowObject;
 
@@ -171,7 +172,7 @@
 
         public void ActiveInputNewPathField()
         {
-            m_inputNewPath.SetActive(true);
+            m_inputframe.SetActive(true);
         }
 
         private void InitModel()
@@ -197,7 +198,7 @@
             pathDropdown.options.Add(new Dropdown.OptionData(newPathName));
             model.AddRoute(newPathName);
             model.currentRouteIndex = pathDropdown.options.Count;
-            m_inputNewPath.gameObject.SetActive(false);
+            m_inputframe.gameObject.SetActive(false);
         }
 
         public void OnDeletePathBtnClick()
