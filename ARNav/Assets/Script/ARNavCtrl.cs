@@ -23,15 +23,10 @@
         public GameObject m_inputframe;
         public GameObject m_inputNewPath;
         public GameObject m_arrowObject;
-
         public GameObject DialogPanel;
-
         public GameObject AlertPanel;
-
         public DialogBox dialog;
-
         public AlertBox alert;
-
         public Text DebugText;
         public Text DebugText2;
 
@@ -199,7 +194,8 @@
             pathDropdown.options.Add(new Dropdown.OptionData(newPathName));
             model.AddRoute(newPathName);
             model.currentRouteIndex = pathDropdown.options.Count;
-            m_inputframe.gameObject.SetActive(false);
+            m_inputNewPath.gameObject.SetActive(false);
+            pathDropdown.value = model.currentRouteIndex;
         }
 
         public void OnDeletePathBtnClick()
