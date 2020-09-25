@@ -19,21 +19,18 @@
         private ARNavModel model;
         private Dropdown pathDropdown;
         private Context context;
-        private Text _text;
         private InputField inputNewField;
         public GameObject m_inputframe;
         public GameObject m_inputNewPath;
         public GameObject m_arrowObject;
         public GameObject DialogPanel;
         public GameObject AlertPanel;
+        public GameObject RoutePopupPanel;
+        public Dropdown pathDropdownPopup;
         public DialogBox dialog;
         public AlertBox alert;
+        public RoutePopup routePopup;
         public GameObject ModeText;
-        public Text DebugText;
-        public Text DebugText2;
-
-        int testi = 0;
-
 
         /// <summary>
         /// The first-person camera being used to render the passthrough camera image (i.e. AR
@@ -75,12 +72,13 @@
         {
             pathDropdown = GameObject.Find("PathDropdown").GetComponent<Dropdown>();
             inputNewField = m_inputNewPath.GetComponent<InputField>();
-            InitModel();
-            DisplayCurrentRoute();
-            DebugText.text = "test";
             dialog = new DialogBox(DialogPanel);
             alert = new AlertBox(AlertPanel);
+            routePopup = new RoutePopup(RoutePopupPanel);
             context = new Context(new UnityAction(UserWork), new UnityAction(ManagerWork));
+            InitModel();
+            DisplayCurrentRoute();
+            routePopup.show();
         }
 
         void Update()
@@ -186,7 +184,6 @@
         /// </summary>
         void UserWork()
         {
-            // Debug.Log("User");
             return;
         }
 
@@ -206,10 +203,13 @@
             // 初始化路徑選擇Dropdown
             foreach (string name in data)
             {
-                pathDropdown.options.Add(new Dropdown.OptionData(name));
+                Dropdown.OptionData newOption = new Dropdown.OptionData(name);
+                pathDropdown.options.Add(newOption);
+                pathDropdownPopup.options.Add(newOption);
             }
             model.currentRouteIndex = data.Count - 1;
             pathDropdown.value = model.currentRouteIndex;
+            pathDropdownPopup.value = model.currentRouteIndex;
         }
 
         public void OnAddNewPathBtnClick()
@@ -225,7 +225,7 @@
         public void OnDeletePathBtnClick()
         {
             dialog.SetInfo("", "刪除後將無法復原\n確認刪除？");
-            dialog.show(new UnityAction(OnDialogConfirmBtnClicked), new UnityAction(OnDialogCancelBtnClicked));
+            dialog.Show(new UnityAction(OnDialogConfirmBtnClicked), new UnityAction(OnDialogCancelBtnClicked));
         }
 
         public void OnDialogConfirmBtnClicked()
@@ -277,6 +277,17 @@
             RefreshView();
         }
 
+        /// <summary>
+        /// Triggered when changing the UI PathDropDown status in popup window
+        /// </summary>
+        public void OnPathDropDownPopupChange()
+        {
+            model.currentRouteIndex = pathDropdownPopup.value;
+            pathDropdown.value = model.currentRouteIndex;
+            Debug.Log("Now on route: " + model.currentRouteIndex);
+            RefreshView();
+        }
+
         public void OnSaveBtnClicked()
         {
             model.SaveToJSon();
@@ -298,18 +309,13 @@
                 return;
             }
 
-            _text = GameObject.Find("DebugText").GetComponent<Text>();
-
             List<AnchorData> anchors = model.GetAnchorsInCurrentRoute();//錨點的list
             if (anchors.Count == 0)//routes還沒有錨點
             {
-                _text.text = "No anchor";
                 return;
             }
             else
             {
-                _text.text = "Have anchors";
-
                 Vector3 distance = newAnchorPostion - lastAnchorPosition;//最後一個錨點與新錨點的距離
 
                 int stage = Convert.ToInt32(distance.magnitude / minArrowDistance);
@@ -538,22 +544,6 @@
                     toastObject.Call("show");
                 }));
             }
-        }
-
-        public void Test()
-        {
-            if (testi % 2 != 0)
-            {
-                context.SetUserMode();
-                ModeText.SetActive(false);
-            }
-            else
-            {
-                context.SetManagerMode();
-                ModeText.SetActive(true);
-            }
-            context.Run();
-            testi++;
         }
     }
 }

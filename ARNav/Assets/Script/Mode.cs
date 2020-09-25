@@ -1,36 +1,42 @@
 using UnityEngine;
 using UnityEngine.Events;
+/// <summary>
+/// The center state pattern class of changing user mode
+/// </summary>
 public abstract class Mode
 {
     public UnityAction _work;
-    public abstract void Work();
+    public virtual void Work()
+    {
+        _work.Invoke();
+        return;
+    }
     public Mode(UnityAction work)
     {
         _work = work;
     }
 }
 
+/// <summary>
+/// Mode for user
+/// </summary>
 public class UserMode : Mode
 {
     public UserMode(UnityAction work) : base(work) { }
 
-    public override void Work()
-    {
-        _work.Invoke();
-        return;
-    }
 }
 
+/// <summary>
+/// Mode for manager
+/// </summary>
 public class ManagerMode : Mode
 {
     public ManagerMode(UnityAction work) : base(work) { }
-    public override void Work()
-    {
-        _work.Invoke();
-        return;
-    }
 }
 
+/// <summary>
+/// The state pattern controller class of changing user mode
+/// </summary>
 public class Context
 {
     private Mode _mode;

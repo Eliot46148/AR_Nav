@@ -36,7 +36,7 @@ public class DialogBox
     /// </summary>
     /// <param name="confirmHandler">Confirm button click handler function</param>
     /// <param name="cancelHandler">Cancel button click handler function</param>
-    public void show(UnityAction confirmHandler, UnityAction cancelHandler)
+    public void Show(UnityAction confirmHandler, UnityAction cancelHandler)
     {
         _box.SetActive(true);
         _confirmBtn.onClick.RemoveAllListeners();
