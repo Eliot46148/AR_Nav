@@ -8,10 +8,11 @@
     using UnityEditor;
     using System;
     using System.Linq;
+    using Assets.Script;
 
 #if UNITY_EDITOR
     // Set up touch input propagation while using Instant Preview in the editor.
-    using Input = InstantPreviewInput;
+    using Input = InstantPreviewInput;    
 #endif
 
     public class ARNavCtrl : MonoBehaviour
@@ -20,6 +21,8 @@
         private Dropdown pathDropdown;
         private Context context;
         private InputField inputNewField;
+        private ModeEnum mode;
+
         public GameObject m_inputframe;
         public GameObject m_inputNewPath;
         public GameObject m_arrowObject;
@@ -72,6 +75,7 @@
         {
             pathDropdown = GameObject.Find("PathDropdown").GetComponent<Dropdown>();
             inputNewField = m_inputNewPath.GetComponent<InputField>();
+            mode = ModeEnum.UserMode;
             dialog = new DialogBox(DialogPanel);
             alert = new AlertBox(AlertPanel);
             routePopup = new RoutePopup(RoutePopupPanel);
@@ -543,6 +547,26 @@
                             "makeText", unityActivity, message, 0);
                     toastObject.Call("show");
                 }));
+            }
+        }
+
+        /// <summary>
+        /// Change Mode Text
+        /// </summary>
+        public void ChangeMode()
+        {
+            switch (mode)
+            {
+                case ModeEnum.UserMode:
+                    mode = ModeEnum.ManagerMode;
+                    context.SetManagerMode();
+                    ModeText.SetActive(true);
+                    break;
+                case ModeEnum.ManagerMode:
+                    mode = ModeEnum.UserMode;
+                    context.SetUserMode();
+                    ModeText.SetActive(false);
+                    break;                
             }
         }
     }
