@@ -12,7 +12,7 @@
 
 #if UNITY_EDITOR
     // Set up touch input propagation while using Instant Preview in the editor.
-    using Input = InstantPreviewInput;    
+    using Input = InstantPreviewInput;
 #endif
 
     public class ARNavCtrl : MonoBehaviour
@@ -196,6 +196,9 @@
             m_inputframe.SetActive(true);
         }
 
+        /// <summary>
+        /// Initialize Model
+        /// </summary>
         private void InitModel()
         {
             model = new ARNavModel();
@@ -216,6 +219,9 @@
             pathDropdownPopup.value = model.currentRouteIndex;
         }
 
+        /// <summary>
+        /// Add new route
+        /// </summary>
         public void OnAddNewPathBtnClick()
         {
             string newPathName = inputNewField.text;
@@ -226,12 +232,18 @@
             pathDropdown.value = model.currentRouteIndex;
         }
 
+        /// <summary>
+        /// Delete route
+        /// </summary>
         public void OnDeletePathBtnClick()
         {
             dialog.SetInfo("", "刪除後將無法復原\n確認刪除？");
             dialog.Show(new UnityAction(OnDialogConfirmBtnClicked), new UnityAction(OnDialogCancelBtnClicked));
         }
 
+        /// <summary>
+        /// Confirm deletion
+        /// </summary>
         public void OnDialogConfirmBtnClicked()
         {
             if (model.mapData.Length > 1)
@@ -255,6 +267,9 @@
             return;
         }
 
+        /// <summary>
+        /// Delete route
+        /// </summary>
         public void OnRemoveAnchorBtnClicked()
         {
             if (model.GetCurrentRouteLength() > 0)
@@ -401,6 +416,9 @@
             }
         }
 
+        /// <summary>
+        /// Display the distance of route
+        /// </summary>
         void DisplayDistance()
         {
             //管理者顯示目前路徑總長幾公尺
@@ -410,49 +428,42 @@
             List<AnchorData> anchors = model.GetAnchorsInCurrentRoute();
             float distance = 0;
 
-            //if(manager)//管理方
+            if (anchors.Count == 0)
             {
-                /*for (int i = anchors.Count - 1; i > 0; i--)
+                return;
+            }
+
+            int nearestAnchorIndex = FindNearestAnchorIndex();
+            Vector3 nearestAnchorPosition = anchors[nearestAnchorIndex]._postion;
+
+            if (nearestAnchorIndex == anchors.Count - 1)//最近的是最後一個點
+            {
+                distance = (Camera.main.transform.position - anchors[nearestAnchorIndex]._postion).magnitude;
+            }
+            else
+            {
+                distance = (Camera.main.transform.position - anchors[nearestAnchorIndex + 1]._postion).magnitude;
+                for (int i = anchors.Count - 1; i > nearestAnchorIndex + 1; i--)
                 {
                     distance += (anchors[i]._postion - anchors[i - 1]._postion).magnitude;
                 }
-
-                debugText.text = "路徑總長:" + distance.ToString("F1") + "公尺";*/
             }
-            //else if(user)//使用者
+
+            if (distance <= 2)
             {
-                if (anchors.Count == 0)
-                {
-                    return;
-                }
-
-                int nearestAnchorIndex = FindNearestAnchorIndex();
-                Vector3 nearestAnchorPosition = anchors[nearestAnchorIndex]._postion;
-
-                if (nearestAnchorIndex == anchors.Count - 1)//最近的是最後一個點
-                {
-                    distance = (Camera.main.transform.position - anchors[nearestAnchorIndex]._postion).magnitude;
-                }
-                else
-                {
-                    distance = (Camera.main.transform.position - anchors[nearestAnchorIndex + 1]._postion).magnitude;
-                    for (int i = anchors.Count - 1; i > nearestAnchorIndex + 1; i--)
-                    {
-                        distance += (anchors[i]._postion - anchors[i - 1]._postion).magnitude;
-                    }
-                }
-
-                if (distance <= 2)
-                {
-                    distanceText.text = "距離目的地: < 2公尺";
-                }
-                else
-                {
-                    distanceText.text = "距離目的地:" + distance.ToString("F1") + "公尺";
-                }
+                distanceText.text = "距離目的地: < 2公尺";
+            }
+            else
+            {
+                distanceText.text = "距離目的地:" + distance.ToString("F1") + "公尺";
             }
         }
-        int FindNearestAnchorIndex()//尋找最近的Anchor的Index
+
+        /// <summary>
+        /// 尋找最近的Anchor的Index
+        /// </summary>
+        /// <returns>最近的Anchor的Index</returns>
+        int FindNearestAnchorIndex()
         {
             List<AnchorData> anchors = model.GetAnchorsInCurrentRoute();
             if (anchors.Count == 0)
@@ -566,7 +577,7 @@
                     mode = ModeEnum.UserMode;
                     context.SetUserMode();
                     ModeText.SetActive(false);
-                    break;                
+                    break;
             }
         }
     }
