@@ -73,6 +73,7 @@
         }
         void Start()
         {
+            Screen.orientation = ScreenOrientation.Portrait;
             pathDropdown = GameObject.Find("PathDropdown").GetComponent<Dropdown>();
             inputNewField = m_inputNewPath.GetComponent<InputField>();
             mode = ModeEnum.UserMode;
